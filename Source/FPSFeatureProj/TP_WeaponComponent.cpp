@@ -18,15 +18,27 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
 	IsHitscan = false;
 	HitscanRange = 999999.0f;
+	MaxAmmo = 5;
+	CurrentAmmo = MaxAmmo;
 }
 
+void UTP_WeaponComponent::BeginPlay()
+{
+	Super::BeginPlay();
+
+	CurrentAmmo = MaxAmmo;
+}
 
 void UTP_WeaponComponent::Fire()
 {
-	if(Character == nullptr || Character->GetController() == nullptr)
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Attempting fire: %d"), CurrentAmmo));
+	if(Character == nullptr || Character->GetController() == nullptr || CurrentAmmo <= 0)
 	{
 		return;
 	}
+
+	CurrentAmmo -= 1;
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Fired: %d"), CurrentAmmo));
 
 	// Try to fire a projectile
 	if (IsHitscan)

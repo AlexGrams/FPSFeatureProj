@@ -41,9 +41,20 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Gameplay)
 	float HitscanRange;
 
+	// Max ammo count
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Gameplay)
+	int MaxAmmo;
+
+	// Current ammo count
+	UPROPERTY(BlueprintReadWrite, Category = Gameplay)
+	int CurrentAmmo;
+
 	// --- Functions ---
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
+
+	UFUNCTION()
+	void BeginPlay();
 
 	/** Attaches the actor to a FirstPersonCharacter */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
