@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
+#include "TP_WeaponComponent.h"
 #include "FPSFeatureProjCharacter.generated.h"
 
 class UInputComponent;
@@ -50,6 +51,10 @@ public:
 	// Delegate for realoading
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnReload OnReload;
+
+	// Weapon selection array
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
+	TArray<AActor*> Weapons;
 protected:
 	
 	/** Fires a projectile. */
