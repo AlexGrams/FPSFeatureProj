@@ -64,6 +64,10 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();
 
+	// Reload weapon
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void Reload();
+
 protected:
 	/** Ends gameplay for this component. */
 	UFUNCTION()

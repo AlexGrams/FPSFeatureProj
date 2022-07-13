@@ -58,6 +58,9 @@ void AFPSFeatureProjCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// Bind fire event
 	PlayerInputComponent->BindAction("PrimaryAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnPrimaryAction);
 
+	// Bind reload event
+	PlayerInputComponent->BindAction("ReloadAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnReloadAction);
+
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
 
@@ -78,6 +81,12 @@ void AFPSFeatureProjCharacter::OnPrimaryAction()
 {
 	// Trigger the OnItemUsed Event
 	OnUseItem.Broadcast();
+}
+
+void AFPSFeatureProjCharacter::OnReloadAction()
+{
+	// Trigger OnReload Event
+	OnReload.Broadcast();
 }
 
 void AFPSFeatureProjCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)

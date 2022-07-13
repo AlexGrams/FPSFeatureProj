@@ -25,8 +25,6 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 void UTP_WeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
-
-	CurrentAmmo = MaxAmmo;
 }
 
 void UTP_WeaponComponent::Fire()
@@ -101,6 +99,14 @@ void UTP_WeaponComponent::Fire()
 	}
 }
 
+void UTP_WeaponComponent::Reload()
+{
+	// Reload weapon
+	CurrentAmmo = MaxAmmo;
+
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Reloading")));
+}
+
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	if(Character != nullptr)
@@ -121,6 +127,9 @@ void UTP_WeaponComponent::AttachWeapon(AFPSFeatureProjCharacter* TargetCharacter
 
 		// Register so that Fire is called every time the character tries to use the item being held
 		Character->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::Fire);
+
+		// Register Reload event
+		Character->OnReload.AddDynamic(this, &UTP_WeaponComponent::Reload);
 	}
 }
 
