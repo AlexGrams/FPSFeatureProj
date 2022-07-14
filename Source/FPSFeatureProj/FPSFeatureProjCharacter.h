@@ -51,10 +51,6 @@ public:
 	// Delegate for realoading
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnReload OnReload;
-
-	// Weapon selection array
-	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
-	TArray<AActor*> Weapons;
 protected:
 	
 	/** Fires a projectile. */
@@ -93,6 +89,14 @@ protected:
 	void EndTouch(const ETouchIndex::Type FingerIndex, const FVector Location);
 	void TouchUpdate(const ETouchIndex::Type FingerIndex, const FVector Location);
 	TouchData	TouchItem;
+
+	// Weapon selection array
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
+	TArray<AActor*> Weapons;
+
+	// Current WeaponComponent
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
+	UTP_WeaponComponent* CurrentWeapon;
 	
 protected:
 	// APawn interface
@@ -113,5 +117,10 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	// Add weapon
+	void AddWeapon(AActor* NewWeapon);
+
+	// Swap to weapon
+	void SwapToWeapon(UTP_WeaponComponent* NewEquipedWeapon);
 };
 

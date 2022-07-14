@@ -60,6 +60,14 @@ public:
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void AttachWeapon(AFPSFeatureProjCharacter* TargetCharacter);
 
+	// Equip this weapon, allowing player to fire it
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void Equip();
+
+	// Unequip weapon, hiding it and disabling fire functionality
+	UFUNCTION(Blueprintcallable, Category = "Weapon")
+	void Unequip();
+
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category="Weapon")
 	void Fire();

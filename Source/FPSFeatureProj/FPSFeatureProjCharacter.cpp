@@ -34,7 +34,11 @@ AFPSFeatureProjCharacter::AFPSFeatureProjCharacter()
 	Mesh1P->CastShadow = false;
 	Mesh1P->SetRelativeRotation(FRotator(1.9f, -19.19f, 5.2f));
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
+}
 
+void AFPSFeatureProjCharacter::AddWeapon(AActor* NewWeapon)
+{
+	Weapons.Add(NewWeapon);
 }
 
 void AFPSFeatureProjCharacter::BeginPlay()
@@ -155,4 +159,18 @@ bool AFPSFeatureProjCharacter::EnableTouchscreenMovement(class UInputComponent* 
 	}
 	
 	return false;
+}
+
+void AFPSFeatureProjCharacter::SwapToWeapon(UTP_WeaponComponent* NewEquipedWeapon)
+{
+	if (NewEquipedWeapon != nullptr)
+	{
+		if (CurrentWeapon != nullptr)
+		{
+			CurrentWeapon->Unequip();
+		}
+
+		CurrentWeapon = NewEquipedWeapon;
+		CurrentWeapon->Equip();
+	}
 }

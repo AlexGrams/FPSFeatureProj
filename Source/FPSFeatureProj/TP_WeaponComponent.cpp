@@ -10,6 +10,7 @@
 #include "Kismet/KismetSystemLibrary.h"
 #include "Camera/CameraComponent.h"
 #include "Components/SceneComponent.h"
+#include "GameFramework/Actor.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -113,6 +114,9 @@ void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 	{
 		// Unregister from the OnUseItem Event
 		Character->OnUseItem.RemoveDynamic(this, &UTP_WeaponComponent::Fire);
+
+		// Unregister from Reload event
+		Character->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
 	}
 }
 
@@ -125,11 +129,46 @@ void UTP_WeaponComponent::AttachWeapon(AFPSFeatureProjCharacter* TargetCharacter
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
 		GetOwner()->AttachToComponent(Character->GetMesh1P(),AttachmentRules, FName(TEXT("GripPoint")));
 
-		// Register so that Fire is called every time the character tries to use the item being held
-		Character->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::Fire);
+		// Add WeaponComponent root to Character's array
+		Character->AddWeapon(GetOwner());
 
-		// Register Reload event
-		Character->OnReload.AddDynamic(this, &UTP_WeaponComponent::Reload);
+		// Tell Character to equip this weapon, which also tells Character to unequip previous weapon if there is one.
+		Character->SwapToWeapon(this);
+
+		//// Register so that Fire is called every time the character tries to use the item being held
+		//Character->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::Fire);
+
+		//// Register Reload event
+		//Character->OnReload.AddDynamic(this, &UTP_WeaponComponent::Reload);
+	}
+}
+
+void UTP_WeaponComponent::Equip()
+{
+	// Unhide this weapon
+	GetOwner()->SetActorHiddenInGame(false);
+
+	// Register with weapon-related events
+	Character->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::Fire);
+	Character->OnReload.AddDynamic(this, &UTP_WeaponComponent::Reload);
+}
+
+void UTP_WeaponComponent::Unequip()
+{
+	// Hide this weapon
+	GetOwner()->SetActorHiddenInGame(true);
+
+	// Unregister with weapon-related events
+	if (Character != nullptr)
+	{
+		if (Character->OnUseItem.Contains(this, FName(TEXT("Fire"))))
+		{
+			Character->OnUseItem.RemoveDynamic(this, &UTP_WeaponComponent::Fire);
+		}
+		if (Character->OnUseItem.Contains(this, FName(TEXT("Reload"))))
+		{
+			Character->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
+		}
 	}
 }
 
