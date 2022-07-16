@@ -65,6 +65,10 @@ void AFPSFeatureProjCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// Bind reload event
 	PlayerInputComponent->BindAction("ReloadAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnReloadAction);
 
+	// Bind weapon switching events
+	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, this, &AFPSFeatureProjCharacter::OnNextWeapon);
+	PlayerInputComponent->BindAction("PreviousWeapon", IE_Pressed, this, &AFPSFeatureProjCharacter::OnPreviousWeapon);
+
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
 
@@ -91,6 +95,22 @@ void AFPSFeatureProjCharacter::OnReloadAction()
 {
 	// Trigger OnReload Event
 	OnReload.Broadcast();
+}
+
+void AFPSFeatureProjCharacter::OnNextWeapon()
+{
+	// TODO: CurrentWeaponIndex not updated on picking up a new weapon. Should be separate interface for weapon pickup.
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Next Weapon")));
+	if (Weapons.Num() > 1)
+	{
+		CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
+		SwapToWeapon(Cast<UTP_WeaponComponent>(Weapons[CurrentWeaponIndex]->GetComponentByClass(UTP_WeaponComponent::StaticClass())));
+	}
+}
+
+void AFPSFeatureProjCharacter::OnPreviousWeapon()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Previous Weapon")));
 }
 
 void AFPSFeatureProjCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
@@ -161,6 +181,7 @@ bool AFPSFeatureProjCharacter::EnableTouchscreenMovement(class UInputComponent* 
 	return false;
 }
 
+// Unequip previous weapon, equip new weapon
 void AFPSFeatureProjCharacter::SwapToWeapon(UTP_WeaponComponent* NewEquipedWeapon)
 {
 	if (NewEquipedWeapon != nullptr)

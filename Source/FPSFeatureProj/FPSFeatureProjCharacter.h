@@ -59,6 +59,10 @@ protected:
 	// Reload weapon
 	void OnReloadAction();
 
+	// Weapon switching
+	void OnNextWeapon();
+	void OnPreviousWeapon();
+
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
 
@@ -97,6 +101,9 @@ protected:
 	// Current WeaponComponent
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
 	UTP_WeaponComponent* CurrentWeapon;
+
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
+	int CurrentWeaponIndex;
 	
 protected:
 	// APawn interface

@@ -105,6 +105,7 @@ void UTP_WeaponComponent::Reload()
 	// Reload weapon
 	CurrentAmmo = MaxAmmo;
 
+	// TODO: Testing
 	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Reloading")));
 }
 
@@ -165,7 +166,7 @@ void UTP_WeaponComponent::Unequip()
 		{
 			Character->OnUseItem.RemoveDynamic(this, &UTP_WeaponComponent::Fire);
 		}
-		if (Character->OnUseItem.Contains(this, FName(TEXT("Reload"))))
+		if (Character->OnReload.Contains(this, FName(TEXT("Reload"))))
 		{
 			Character->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
 		}
