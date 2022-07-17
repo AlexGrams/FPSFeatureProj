@@ -30,14 +30,12 @@ void UTP_WeaponComponent::BeginPlay()
 
 void UTP_WeaponComponent::Fire()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Attempting fire: %d"), CurrentAmmo));
 	if(Character == nullptr || Character->GetController() == nullptr || CurrentAmmo <= 0)
 	{
 		return;
 	}
 
 	CurrentAmmo -= 1;
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Fired: %d"), CurrentAmmo));
 
 	// Try to fire a projectile
 	if (IsHitscan)
@@ -52,13 +50,9 @@ void UTP_WeaponComponent::Fire()
 		// Line Trace parameters
 		FCollisionQueryParams Params = FCollisionQueryParams(FName(TEXT("Hitscan")), true, Character);
 
-		// TODO: For debugging
-		//GetWorld()->DebugDrawTraceTag = FName(TEXT("DebugTrace"));
-		//Params.TraceTag = FName(TEXT("DebugTrace"));
-
 		if (GetWorld()->LineTraceSingleByObjectType(OutHit, Start, End, ObjectQueryParams, Params))
 		{
-			// 2. Attempt to damage the result of the line trace
+			// TODO: 2. Attempt to damage the result of the line trace
 			// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *OutHit.GetActor()->GetName()));
 		}
 	}
@@ -100,13 +94,10 @@ void UTP_WeaponComponent::Fire()
 	}
 }
 
+// Reload weapon
 void UTP_WeaponComponent::Reload()
 {
-	// Reload weapon
 	CurrentAmmo = MaxAmmo;
-
-	// TODO: Testing
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Reloading")));
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
@@ -131,16 +122,7 @@ void UTP_WeaponComponent::AttachWeapon(AFPSFeatureProjCharacter* TargetCharacter
 		GetOwner()->AttachToComponent(Character->GetMesh1P(),AttachmentRules, FName(TEXT("GripPoint")));
 
 		// Add WeaponComponent root to Character's array
-		Character->AddWeapon(GetOwner());
-
-		// Tell Character to equip this weapon, which also tells Character to unequip previous weapon if there is one.
-		Character->SwapToWeapon(this);
-
-		//// Register so that Fire is called every time the character tries to use the item being held
-		//Character->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::Fire);
-
-		//// Register Reload event
-		//Character->OnReload.AddDynamic(this, &UTP_WeaponComponent::Reload);
+		Character->PickUpWeapon(GetOwner());
 	}
 }
 

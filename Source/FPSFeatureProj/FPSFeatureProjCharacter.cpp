@@ -36,6 +36,13 @@ AFPSFeatureProjCharacter::AFPSFeatureProjCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
 }
 
+void AFPSFeatureProjCharacter::PickUpWeapon(AActor* NewWeapon)
+{
+	Weapons.Add(NewWeapon);
+	CurrentWeaponIndex = Weapons.Num() - 1;
+	SwapToWeapon(CurrentWeaponIndex);
+}
+
 void AFPSFeatureProjCharacter::AddWeapon(AActor* NewWeapon)
 {
 	Weapons.Add(NewWeapon);
@@ -99,18 +106,20 @@ void AFPSFeatureProjCharacter::OnReloadAction()
 
 void AFPSFeatureProjCharacter::OnNextWeapon()
 {
-	// TODO: CurrentWeaponIndex not updated on picking up a new weapon. Should be separate interface for weapon pickup.
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Next Weapon")));
 	if (Weapons.Num() > 1)
 	{
 		CurrentWeaponIndex = (CurrentWeaponIndex + 1) % Weapons.Num();
-		SwapToWeapon(Cast<UTP_WeaponComponent>(Weapons[CurrentWeaponIndex]->GetComponentByClass(UTP_WeaponComponent::StaticClass())));
+		SwapToWeapon(CurrentWeaponIndex);
 	}
 }
 
 void AFPSFeatureProjCharacter::OnPreviousWeapon()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Previous Weapon")));
+	if (Weapons.Num() > 1)
+	{
+		CurrentWeaponIndex = (CurrentWeaponIndex - 1 + Weapons.Num()) % Weapons.Num();
+		SwapToWeapon(CurrentWeaponIndex);
+	}
 }
 
 void AFPSFeatureProjCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
@@ -193,5 +202,15 @@ void AFPSFeatureProjCharacter::SwapToWeapon(UTP_WeaponComponent* NewEquipedWeapo
 
 		CurrentWeapon = NewEquipedWeapon;
 		CurrentWeapon->Equip();
+	}
+}
+
+// Weapon swap wrapper requiring only weapon index
+void AFPSFeatureProjCharacter::SwapToWeapon(int WeaponIndex)
+{
+	if (WeaponIndex > -1 && WeaponIndex < Weapons.Num())
+	{
+		// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Swapping to weapon %d"), WeaponIndex));
+		SwapToWeapon(Cast<UTP_WeaponComponent>(Weapons[WeaponIndex]->GetComponentByClass(UTP_WeaponComponent::StaticClass())));
 	}
 }

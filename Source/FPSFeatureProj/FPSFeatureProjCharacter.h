@@ -124,10 +124,15 @@ public:
 	/** Returns FirstPersonCameraComponent subobject **/
 	UCameraComponent* GetFirstPersonCameraComponent() const { return FirstPersonCameraComponent; }
 
+	// Pick up new weapon
+	void PickUpWeapon(AActor* NewWeapon);
+
 	// Add weapon
 	void AddWeapon(AActor* NewWeapon);
 
-	// Swap to weapon
+	// Swap to weapon using UTP_WeaponComponent pointer or weapon index
 	void SwapToWeapon(UTP_WeaponComponent* NewEquipedWeapon);
+	void SwapToWeapon(int WeaponIndex);
+
 };
 
