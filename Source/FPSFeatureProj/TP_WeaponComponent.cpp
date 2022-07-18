@@ -11,6 +11,7 @@
 #include "Camera/CameraComponent.h"
 #include "Components/SceneComponent.h"
 #include "GameFramework/Actor.h"
+#include "Kismet/GameplayStatics.h"
 
 // Sets default values for this component's properties
 UTP_WeaponComponent::UTP_WeaponComponent()
@@ -49,11 +50,47 @@ void UTP_WeaponComponent::Fire()
 		FCollisionObjectQueryParams ObjectQueryParams = FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic) | ECC_TO_BITFIELD(ECC_Pawn) | ECC_TO_BITFIELD(ECC_PhysicsBody));
 		// Line Trace parameters
 		FCollisionQueryParams Params = FCollisionQueryParams(FName(TEXT("Hitscan")), true, Character);
+		bool Result = GetWorld()->LineTraceSingleByObjectType(OutHit, Start, End, ObjectQueryParams, Params);
 
-		if (GetWorld()->LineTraceSingleByObjectType(OutHit, Start, End, ObjectQueryParams, Params))
+		// TODO: Testing OutHit problem
+		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, OutHit.ToString());
+		//const TCHAR* OutString = *OutHit.ToString();
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *OutHit.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *OutHit.GetActor()->GetName());
+		//return;
+
+		if (Result)
 		{
 			// TODO: 2. Attempt to damage the result of the line trace
-			// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%s"), *OutHit.GetActor()->GetName()));
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Hit something")));
+
+			// Actual damage that was applied
+			float TakenDamage = 0.0f;
+
+			// TODO: Find best place to set these
+			AActor* DamagedActor = OutHit.GetActor();
+			float BaseDamage = 25.0f; // TODO: Set damage
+			AController* EventInstigator = Character->GetController();
+			AActor* DamageCauser = Character;
+			TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
+
+			if (!DamagedActor)
+			{
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Unknown hit object")));
+			}
+			else if (BaseDamage != 0.f)
+			{
+				// make sure we have a good damage type
+				TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
+				FDamageEvent DamageEvent(ValidDamageTypeClass);
+
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Taking damage")));
+				TakenDamage = DamagedActor->TakeDamage(BaseDamage, DamageEvent, EventInstigator, DamageCauser);
+			}
+		}
+		else
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Not valid hit")));
 		}
 	}
 	else if (ProjectileClass != nullptr)
