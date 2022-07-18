@@ -4,11 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "UObject/Interface.h"
-#include "HealthInterface.generated.h"
+#include "ProjectileInterface.generated.h"
 
 // This class does not need to be modified.
-UINTERFACE(MinimalAPI, Blueprintable)
-class UHealthInterface : public UInterface
+UINTERFACE(MinimalAPI)
+class UProjectileInterface : public UInterface
 {
 	GENERATED_BODY()
 };
@@ -16,15 +16,15 @@ class UHealthInterface : public UInterface
 /**
  * 
  */
-class FPSFEATUREPROJ_API IHealthInterface
+class FPSFEATUREPROJ_API IProjectileInterface
 {
 	GENERATED_BODY()
 
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	// --- Functions ---
-	
-	// Called when this object no longer has any health
-	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health")
-	void HealthDepleted();
+
+	// Set properties for this projectile
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Setup")
+	void SetProperties(float fDamage, AController* aPlayerController, AActor* aShooter);
 };

@@ -40,6 +40,10 @@ public:
 	// How far a hitscan weapon can shoot
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Gameplay)
 	float HitscanRange;
+	
+	// Weapon damage
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Gameplay)
+	float Damage;
 
 	// Max ammo count
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Gameplay)
@@ -50,6 +54,7 @@ public:
 	int CurrentAmmo;
 
 	// --- Functions ---
+
 	/** Sets default values for this component's properties */
 	UTP_WeaponComponent();
 

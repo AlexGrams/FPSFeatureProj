@@ -61,36 +61,30 @@ void UTP_WeaponComponent::Fire()
 
 		if (Result)
 		{
-			// TODO: 2. Attempt to damage the result of the line trace
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Hit something")));
-
 			// Actual damage that was applied
 			float TakenDamage = 0.0f;
 
 			// TODO: Find best place to set these
 			AActor* DamagedActor = OutHit.GetActor();
-			float BaseDamage = 25.0f; // TODO: Set damage
 			AController* EventInstigator = Character->GetController();
 			AActor* DamageCauser = Character;
 			TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
 
 			if (!DamagedActor)
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Unknown hit object")));
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Unknown hit object")));
 			}
-			else if (BaseDamage != 0.f)
+			else if (Damage != 0.f)
 			{
 				// make sure we have a good damage type
 				TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
 				FDamageEvent DamageEvent(ValidDamageTypeClass);
-
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Taking damage")));
-				TakenDamage = DamagedActor->TakeDamage(BaseDamage, DamageEvent, EventInstigator, DamageCauser);
+				TakenDamage = DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
 			}
 		}
 		else
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Not valid hit")));
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Not valid hit")));
 		}
 	}
 	else if (ProjectileClass != nullptr)
@@ -107,9 +101,18 @@ void UTP_WeaponComponent::Fire()
 			//Set Spawn Collision Handling Override
 			FActorSpawnParameters ActorSpawnParams;
 			ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButDontSpawnIfColliding;
+			ActorSpawnParams.Instigator = Character;
 	
 			// Spawn the projectile at the muzzle
-			World->SpawnActor<AFPSFeatureProjProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			AFPSFeatureProjProjectile* SpawnedProjectile = World->SpawnActor<AFPSFeatureProjProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			if (SpawnedProjectile->Implements<UProjectileInterface>())
+			{
+				IProjectileInterface* Interface = Cast<IProjectileInterface>(SpawnedProjectile);
+				AController* EventInstigator = Character->GetController();
+				AActor* DamageCauser = Character;
+
+				Interface->Execute_SetProperties(SpawnedProjectile, Damage, EventInstigator, DamageCauser);
+			}
 		}
 	}
 	

@@ -34,18 +34,14 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const clas
 	if (!IsDead)
 	{
 		Health = FMath::Clamp(Health - Damage, 0.0f, DefaultHealth);
-		// TODO: Testing interface execution
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%.2f"), Health));
 
 		if (Health <= 0)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%.2f"), Health));
 			// Check if parent has HealthInterface, then call HealthDepleted.
 			IHealthInterface* Interface = Cast<IHealthInterface>(Owner);
 
-			if (Interface)
+			if (Owner->Implements<UHealthInterface>())
 			{
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("%.2f"), Health));
 				IsDead = true;
 				Interface->Execute_HealthDepleted(Owner);
 			}

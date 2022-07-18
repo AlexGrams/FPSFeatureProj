@@ -4,13 +4,14 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "ProjectileInterface.h"
 #include "FPSFeatureProjProjectile.generated.h"
 
 class USphereComponent;
 class UProjectileMovementComponent;
 
 UCLASS(config=Game)
-class AFPSFeatureProjProjectile : public AActor
+class AFPSFeatureProjProjectile : public AActor, public IProjectileInterface
 {
 	GENERATED_BODY()
 
@@ -21,6 +22,11 @@ class AFPSFeatureProjProjectile : public AActor
 	/** Projectile movement component */
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Movement, meta = (AllowPrivateAccess = "true"))
 	UProjectileMovementComponent* ProjectileMovement;
+
+protected:
+	float Damage;
+	AController* PlayerController;
+	AActor* Shooter;
 
 public:
 	AFPSFeatureProjProjectile();
@@ -33,5 +39,7 @@ public:
 	USphereComponent* GetCollisionComp() const { return CollisionComp; }
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
+	// Set projectile properties
+	void SetProperties_Implementation(float fDamage, AController* aPlayerController, AActor* aShooter);
 };
 

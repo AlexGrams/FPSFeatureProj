@@ -3,6 +3,7 @@
 #include "FPSFeatureProjProjectile.h"
 #include "GameFramework/ProjectileMovementComponent.h"
 #include "Components/SphereComponent.h"
+#include "HealthComponent.h"
 
 AFPSFeatureProjProjectile::AFPSFeatureProjProjectile() 
 {
@@ -31,8 +32,32 @@ AFPSFeatureProjProjectile::AFPSFeatureProjProjectile()
 	InitialLifeSpan = 3.0f;
 }
 
+void AFPSFeatureProjProjectile::SetProperties_Implementation(float fDamage, AController* aPlayerController, AActor* aShooter)
+{
+	Damage = fDamage;
+	PlayerController = aPlayerController;
+	Shooter = aShooter;
+}
+
 void AFPSFeatureProjProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
 {
+	// Damage other object if it contains a HealthComponent
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherActor->FindComponentByClass(UHealthComponent::StaticClass()) != nullptr)
+	{
+		float TakenDamage = 0.0f;	// Actual damage that was applied
+		TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
+
+		if (Damage != 0.f)
+		{
+			// make sure we have a good damage type
+			TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
+			FDamageEvent DamageEvent(ValidDamageTypeClass);
+			TakenDamage = OtherActor->TakeDamage(Damage, DamageEvent, PlayerController, Shooter);
+		}
+
+		Destroy();
+	}
+
 	// Only add impulse and destroy projectile if we hit a physics
 	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
 	{
