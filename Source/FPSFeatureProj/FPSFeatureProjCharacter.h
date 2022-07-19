@@ -33,6 +33,25 @@ class AFPSFeatureProjCharacter : public ACharacter
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = Camera, meta = (AllowPrivateAccess = "true"))
 	UCameraComponent* FirstPersonCameraComponent;
 
+protected:
+	// If true, prevents movement
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Movement")
+	bool IsDodging;
+
+	// How long player dodges for
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float DodgeTime;
+
+	// Speed multiplier of dodge
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float DodgeSpeedMultiplier;
+
+	// Used through duration of a dodge
+	FTimerHandle DodgeTimerHandle;
+
+	// Stored dodge direction
+	FVector DodgeDirection;
+
 public:
 	AFPSFeatureProjCharacter();
 
@@ -48,10 +67,13 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnUseItem OnUseItem;
 
-	// Delegate for realoading
+	// Delegate for reloading
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnReload OnReload;
 protected:
+
+	// Tick function
+	virtual void Tick(float DeltaSeconds);
 	
 	/** Fires a projectile. */
 	void OnPrimaryAction();
@@ -62,6 +84,9 @@ protected:
 	// Weapon switching
 	void OnNextWeapon();
 	void OnPreviousWeapon();
+
+	// Dodging
+	void OnDodge();
 
 	/** Handles moving forward/backward */
 	void MoveForward(float Val);
@@ -133,6 +158,9 @@ public:
 	// Swap to weapon using UTP_WeaponComponent pointer or weapon index
 	void SwapToWeapon(UTP_WeaponComponent* NewEquipedWeapon);
 	void SwapToWeapon(int WeaponIndex);
+
+	UFUNCTION()
+	void SetIsDodging(bool bIsDodging);
 
 };
 

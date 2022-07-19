@@ -36,6 +36,11 @@ AFPSFeatureProjCharacter::AFPSFeatureProjCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
 }
 
+void AFPSFeatureProjCharacter::SetIsDodging(bool bIsDodging)
+{
+	IsDodging = bIsDodging;
+}
+
 void AFPSFeatureProjCharacter::PickUpWeapon(AActor* NewWeapon)
 {
 	Weapons.Add(NewWeapon);
@@ -53,6 +58,14 @@ void AFPSFeatureProjCharacter::BeginPlay()
 	// Call the base class  
 	Super::BeginPlay();
 
+	PrimaryActorTick.bCanEverTick = true;
+	IsDodging = false;
+}
+
+void AFPSFeatureProjCharacter::Tick(float DeltaSeconds)
+{
+	if (IsDodging)
+		AddMovementInput(DodgeDirection, DodgeSpeedMultiplier);
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -75,6 +88,9 @@ void AFPSFeatureProjCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	// Bind weapon switching events
 	PlayerInputComponent->BindAction("NextWeapon", IE_Pressed, this, &AFPSFeatureProjCharacter::OnNextWeapon);
 	PlayerInputComponent->BindAction("PreviousWeapon", IE_Pressed, this, &AFPSFeatureProjCharacter::OnPreviousWeapon);
+
+	// Bind dodge event
+	PlayerInputComponent->BindAction("Dodge", IE_Pressed, this, &AFPSFeatureProjCharacter::OnDodge);
 
 	// Enable touchscreen input
 	EnableTouchscreenMovement(PlayerInputComponent);
@@ -122,6 +138,16 @@ void AFPSFeatureProjCharacter::OnPreviousWeapon()
 	}
 }
 
+void AFPSFeatureProjCharacter::OnDodge()
+{
+	FTimerDelegate DodgeTimerDelegate;
+
+	DodgeDirection = GetLastMovementInputVector();
+	IsDodging = true;
+	DodgeTimerDelegate.BindUFunction(this, FName("SetIsDodging"), false);
+	GetWorldTimerManager().SetTimer(DodgeTimerHandle, DodgeTimerDelegate, DodgeTime, false);
+}
+
 void AFPSFeatureProjCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
 {
 	if (TouchItem.bIsPressed == true)
@@ -149,7 +175,7 @@ void AFPSFeatureProjCharacter::EndTouch(const ETouchIndex::Type FingerIndex, con
 
 void AFPSFeatureProjCharacter::MoveForward(float Value)
 {
-	if (Value != 0.0f)
+	if (!IsDodging && Value != 0.0f)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorForwardVector(), Value);
@@ -158,7 +184,7 @@ void AFPSFeatureProjCharacter::MoveForward(float Value)
 
 void AFPSFeatureProjCharacter::MoveRight(float Value)
 {
-	if (Value != 0.0f)
+	if (!IsDodging && Value != 0.0f)
 	{
 		// add movement in that direction
 		AddMovementInput(GetActorRightVector(), Value);
