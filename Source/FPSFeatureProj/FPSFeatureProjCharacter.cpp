@@ -7,6 +7,7 @@
 #include "Components/CapsuleComponent.h"
 #include "Components/InputComponent.h"
 #include "GameFramework/InputSettings.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -36,11 +37,6 @@ AFPSFeatureProjCharacter::AFPSFeatureProjCharacter()
 	Mesh1P->SetRelativeLocation(FVector(-0.5f, -4.4f, -155.7f));
 }
 
-void AFPSFeatureProjCharacter::SetIsDodging(bool bIsDodging)
-{
-	IsDodging = bIsDodging;
-}
-
 void AFPSFeatureProjCharacter::PickUpWeapon(AActor* NewWeapon)
 {
 	Weapons.Add(NewWeapon);
@@ -60,12 +56,16 @@ void AFPSFeatureProjCharacter::BeginPlay()
 
 	PrimaryActorTick.bCanEverTick = true;
 	IsDodging = false;
+	DefaultMaxWalkSpeed = GetCharacterMovement()->MaxWalkSpeed;
+	DefaultMaxAcceleration = GetCharacterMovement()->MaxAcceleration;
 }
 
 void AFPSFeatureProjCharacter::Tick(float DeltaSeconds)
 {
 	if (IsDodging)
+	{
 		AddMovementInput(DodgeDirection, DodgeSpeedMultiplier);
+	}
 }
 
 //////////////////////////////////////////////////////////////////////////// Input
@@ -140,12 +140,19 @@ void AFPSFeatureProjCharacter::OnPreviousWeapon()
 
 void AFPSFeatureProjCharacter::OnDodge()
 {
-	FTimerDelegate DodgeTimerDelegate;
+	if (!IsDodging)
+	{
+		FTimerDelegate DodgeTimerDelegate;
 
-	DodgeDirection = GetLastMovementInputVector();
-	IsDodging = true;
-	DodgeTimerDelegate.BindUFunction(this, FName("SetIsDodging"), false);
-	GetWorldTimerManager().SetTimer(DodgeTimerHandle, DodgeTimerDelegate, DodgeTime, false);
+		DodgeDirection = GetLastMovementInputVector();
+		IsDodging = true;
+		DodgeTimerDelegate.BindUFunction(this, TEXT("StopDodging"));
+		GetWorldTimerManager().SetTimer(DodgeTimerHandle, DodgeTimerDelegate, DodgeTime, false);
+
+		// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Dodging")));
+		GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed * DodgeSpeedMultiplier;
+		GetCharacterMovement()->MaxAcceleration = DefaultMaxAcceleration * DodgeAccelerationMultiplier;
+	}
 }
 
 void AFPSFeatureProjCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, const FVector Location)
@@ -239,4 +246,11 @@ void AFPSFeatureProjCharacter::SwapToWeapon(int WeaponIndex)
 		// GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Swapping to weapon %d"), WeaponIndex));
 		SwapToWeapon(Cast<UTP_WeaponComponent>(Weapons[WeaponIndex]->GetComponentByClass(UTP_WeaponComponent::StaticClass())));
 	}
+}
+
+void AFPSFeatureProjCharacter::StopDodging()
+{
+	IsDodging = false;
+	GetCharacterMovement()->MaxWalkSpeed = DefaultMaxWalkSpeed;
+	GetCharacterMovement()->MaxAcceleration = DefaultMaxAcceleration;
 }

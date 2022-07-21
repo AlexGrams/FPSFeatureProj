@@ -42,15 +42,22 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float DodgeTime;
 
-	// Speed multiplier of dodge
+	// Value to scale default movement speed by when dodging
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
 	float DodgeSpeedMultiplier;
+
+	// Value to scale default movement acceleration by when dodging
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Movement")
+	float DodgeAccelerationMultiplier;
 
 	// Used through duration of a dodge
 	FTimerHandle DodgeTimerHandle;
 
 	// Stored dodge direction
 	FVector DodgeDirection;
+
+	float DefaultMaxWalkSpeed;
+	float DefaultMaxAcceleration;
 
 public:
 	AFPSFeatureProjCharacter();
@@ -159,8 +166,9 @@ public:
 	void SwapToWeapon(UTP_WeaponComponent* NewEquipedWeapon);
 	void SwapToWeapon(int WeaponIndex);
 
+	// Reset properties that were changed while dodging
 	UFUNCTION()
-	void SetIsDodging(bool bIsDodging);
+	void StopDodging();
 
 };
 
