@@ -79,8 +79,9 @@ void AFPSFeatureProjCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Jump", IE_Pressed, this, &ACharacter::Jump);
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
-	// Bind fire event
+	// Bind fire events
 	PlayerInputComponent->BindAction("PrimaryAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnPrimaryAction);
+	PlayerInputComponent->BindAction("PrimaryAction", IE_Released, this, &AFPSFeatureProjCharacter::OnPrimaryActionRelease);
 
 	// Bind reload event
 	PlayerInputComponent->BindAction("ReloadAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnReloadAction);
@@ -110,8 +111,13 @@ void AFPSFeatureProjCharacter::SetupPlayerInputComponent(class UInputComponent* 
 
 void AFPSFeatureProjCharacter::OnPrimaryAction()
 {
-	// Trigger the OnItemUsed Event
+	// Trigger the OnUseItem Event
 	OnUseItem.Broadcast();
+}
+
+void AFPSFeatureProjCharacter::OnPrimaryActionRelease()
+{
+	OnUseItemRelease.Broadcast();
 }
 
 void AFPSFeatureProjCharacter::OnReloadAction()

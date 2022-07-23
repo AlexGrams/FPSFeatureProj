@@ -22,11 +22,44 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	HitscanRange = 999999.0f;
 	MaxAmmo = 5;
 	CurrentAmmo = MaxAmmo;
+
+	// Automatic weapon settings
+	IsAutomatic = false;
+	FireInterval = 0.2f;
+	FireInputHeld = false;
+	CanFire = true;
 }
 
 void UTP_WeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
+}
+
+// Fires continuously if automatic, or fires weapon once if not.
+void UTP_WeaponComponent::OnFirePressed()
+{
+	// TODO: Fix automatic firing with spamming fire input
+	if (CanFire)
+		Fire();
+
+	if (IsAutomatic)
+	{
+		// Bind AutoFireFunction if it hasn't been bound already.
+		if (!AutoFireDelegate.IsBound())
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Bound fire function")));
+			AutoFireDelegate.BindUFunction(this, TEXT("AutoFireFunction"));
+		}
+
+		FireInputHeld = true;
+		Character->GetWorldTimerManager().SetTimer(AutoFireHandle, AutoFireDelegate, FireInterval, true);
+	}
+}
+
+// Reset automatic fire variables 
+void UTP_WeaponComponent::OnFireReleased()
+{
+	FireInputHeld = false;
 }
 
 void UTP_WeaponComponent::Fire()
@@ -134,22 +167,41 @@ void UTP_WeaponComponent::Fire()
 	}
 }
 
+// To be called by a Timer on automatic weapons. Clears timer if Fire input is no longer held.
+void UTP_WeaponComponent::AutoFireFunction()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Auto firing")));
+	if (FireInputHeld)
+	{
+		Fire();
+	}
+	else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Stop auto fire")));
+		Character->GetWorldTimerManager().ClearTimer(AutoFireHandle);
+	}
+}
+
 // Reload weapon
 void UTP_WeaponComponent::Reload()
 {
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TODO: reloading action")));
 	CurrentAmmo = MaxAmmo;
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
-	if(Character != nullptr)
-	{
-		// Unregister from the OnUseItem Event
-		Character->OnUseItem.RemoveDynamic(this, &UTP_WeaponComponent::Fire);
+	Unequip();
 
-		// Unregister from Reload event
-		Character->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
-	}
+	// TODO: See if code is equivalent to calling Unequip()
+	//if(Character != nullptr)
+	//{
+	//	// Unregister from the OnUseItem Event
+	//	Character->OnUseItem.RemoveDynamic(this, &UTP_WeaponComponent::Fire);
+
+	//	// Unregister from Reload event
+	//	Character->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
+	//}
 }
 
 void UTP_WeaponComponent::AttachWeapon(AFPSFeatureProjCharacter* TargetCharacter)
@@ -172,7 +224,8 @@ void UTP_WeaponComponent::Equip()
 	GetOwner()->SetActorHiddenInGame(false);
 
 	// Register with weapon-related events
-	Character->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::Fire);
+	Character->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::OnFirePressed);
+	Character->OnUseItemRelease.AddDynamic(this, &UTP_WeaponComponent::OnFireReleased);
 	Character->OnReload.AddDynamic(this, &UTP_WeaponComponent::Reload);
 }
 
@@ -184,14 +237,22 @@ void UTP_WeaponComponent::Unequip()
 	// Unregister with weapon-related events
 	if (Character != nullptr)
 	{
-		if (Character->OnUseItem.Contains(this, FName(TEXT("Fire"))))
+		if (Character->OnUseItem.Contains(this, FName(TEXT("OnFirePressed"))))
 		{
-			Character->OnUseItem.RemoveDynamic(this, &UTP_WeaponComponent::Fire);
+			Character->OnUseItem.RemoveDynamic(this, &UTP_WeaponComponent::OnFirePressed);
+		}
+		if (Character->OnUseItemRelease.Contains(this, FName(TEXT("OnFireReleased"))))
+		{
+			Character->OnUseItemRelease.RemoveDynamic(this, &UTP_WeaponComponent::OnFireReleased);
 		}
 		if (Character->OnReload.Contains(this, FName(TEXT("Reload"))))
 		{
 			Character->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
 		}
+
+		// Stop automatic firing if Fire input is held down.
+		if (IsAutomatic && AutoFireHandle.IsValid() && Character->GetWorldTimerManager().IsTimerActive(AutoFireHandle))
+			Character->GetWorldTimerManager().ClearTimer(AutoFireHandle);
 	}
 }
 

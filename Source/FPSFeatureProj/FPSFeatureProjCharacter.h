@@ -17,6 +17,8 @@ class USoundBase;
 // Declaration of the delegate that will be called when the Primary Action is triggered
 // It is declared as dynamic so it can be accessed also in Blueprints
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUseItem);
+// Delegate for releasing held input
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUseItemRelease);
 // Similar delegate for reloading
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReload);
 
@@ -74,6 +76,10 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnUseItem OnUseItem;
 
+	// Delegate for releasing primary action input
+	UPROPERTY(BlueprintAssignable, Category = "Interaction")
+	FOnUseItemRelease OnUseItemRelease;
+
 	// Delegate for reloading
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnReload OnReload;
@@ -84,6 +90,9 @@ protected:
 	
 	/** Fires a projectile. */
 	void OnPrimaryAction();
+
+	// Player released PrimaryAction input
+	void OnPrimaryActionRelease();
 
 	// Reload weapon
 	void OnReloadAction();
