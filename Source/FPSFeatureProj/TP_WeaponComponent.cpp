@@ -38,7 +38,6 @@ void UTP_WeaponComponent::BeginPlay()
 // Fires continuously if automatic, or fires weapon once if not.
 void UTP_WeaponComponent::OnFirePressed()
 {
-	// TODO: Fix automatic firing with spamming fire input
 	if (CanFire)
 		Fire();
 
@@ -47,12 +46,20 @@ void UTP_WeaponComponent::OnFirePressed()
 		// Bind AutoFireFunction if it hasn't been bound already.
 		if (!AutoFireDelegate.IsBound())
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Bound fire function")));
 			AutoFireDelegate.BindUFunction(this, TEXT("AutoFireFunction"));
 		}
 
 		FireInputHeld = true;
-		Character->GetWorldTimerManager().SetTimer(AutoFireHandle, AutoFireDelegate, FireInterval, true);
+		CanFire = false;
+
+		// Set timer only if it is not already running
+		if (Character != nullptr)
+		{
+			if (!Character->GetWorldTimerManager().IsTimerActive(AutoFireHandle))
+			{
+				Character->GetWorldTimerManager().SetTimer(AutoFireHandle, AutoFireDelegate, FireInterval, true);
+			}
+		}
 	}
 }
 
@@ -84,13 +91,6 @@ void UTP_WeaponComponent::Fire()
 		// Line Trace parameters
 		FCollisionQueryParams Params = FCollisionQueryParams(FName(TEXT("Hitscan")), true, Character);
 		bool Result = GetWorld()->LineTraceSingleByObjectType(OutHit, Start, End, ObjectQueryParams, Params);
-
-		// TODO: Testing OutHit problem
-		//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, OutHit.ToString());
-		//const TCHAR* OutString = *OutHit.ToString();
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *OutHit.ToString());
-		//UE_LOG(LogTemp, Warning, TEXT("%s"), *OutHit.GetActor()->GetName());
-		//return;
 
 		if (Result)
 		{
@@ -170,14 +170,18 @@ void UTP_WeaponComponent::Fire()
 // To be called by a Timer on automatic weapons. Clears timer if Fire input is no longer held.
 void UTP_WeaponComponent::AutoFireFunction()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Auto firing")));
+	if (Character == nullptr)
+	{
+		return;
+	}
+
 	if (FireInputHeld)
 	{
 		Fire();
 	}
 	else
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Stop auto fire")));
+		CanFire = true;
 		Character->GetWorldTimerManager().ClearTimer(AutoFireHandle);
 	}
 }
@@ -220,6 +224,11 @@ void UTP_WeaponComponent::AttachWeapon(AFPSFeatureProjCharacter* TargetCharacter
 
 void UTP_WeaponComponent::Equip()
 {
+	if (Character == nullptr)
+	{
+		return;
+	}
+
 	// Unhide this weapon
 	GetOwner()->SetActorHiddenInGame(false);
 
