@@ -18,6 +18,7 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 {
 	// Default offset from the character location for projectiles to spawn
 	MuzzleOffset = FVector(100.0f, 0.0f, 10.0f);
+	Damage = 10.0f;
 	IsHitscan = false;
 	HitscanRange = 999999.0f;
 	MaxAmmo = 5;
