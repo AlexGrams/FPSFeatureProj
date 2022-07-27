@@ -17,19 +17,19 @@ void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	
+	/*
+	* TODO: Weapon loading and attaching
+	* Load weapon classes asynchronously.
+	* Add to Weapons TArray.
+	* Child to corresponding WeaponAttachmentPoint.
+	* Place at origin of parent (ie WeaponAttachmentPoint position).
+	*/
 }
 
 // Called every frame
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-}
-
-// Called to bind functionality to input
-void AEnemy::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
 }
 
