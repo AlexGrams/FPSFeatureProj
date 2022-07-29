@@ -17,16 +17,28 @@ void UBaseWeaponComponent::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// ...
-	
+	Character = nullptr;
 }
 
 void UBaseWeaponComponent::Fire()
 {
-	if (Character == nullptr || Character->GetController() == nullptr || CurrentAmmo <= 0)
+	// TODO: Testing
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Firing gun")));
+	if (!IsValid(Character))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Character null")));
+	}
+	else if (!IsValid(Character->GetController()))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Controller null")));
+	}
+
+	// TODO: Better pointer validation checks
+	if (!IsValid(Character) || Character == nullptr || Character->GetController() == nullptr || CurrentAmmo <= 0)
 	{
 		return;
 	}
+	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Firing gun2 ")));
 
 	CurrentAmmo -= 1;
 

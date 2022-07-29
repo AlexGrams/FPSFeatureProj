@@ -18,23 +18,23 @@ public:
 	// TODO: Convert component class to own Actor-derived class that all weapons can inherit from.
 
 	/** Projectile class to spawn */
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Projectile)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Projectile)
 	TSubclassOf<class AFPSFeatureProjProjectile> ProjectileClass;
 
 	/** Sound to play each time we fire */
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	USoundBase* FireSound;
 
 	/** AnimMontage to play each time we fire */
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	UAnimMontage* FireAnimation;
 
 	/** Gun muzzle's offset from the characters location */
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Gameplay)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Gameplay)
 	FVector MuzzleOffset;
 
 	// True if gun does not fire a physics projectile.
-	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Weapon)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = Weapon)
 	bool IsHitscan;
 
 	// Can weapon be fired by holding down fire input?

@@ -5,6 +5,8 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "HealthComponent.h"
+#include "Engine/EngineTypes.h"
+#include "EnemyWeaponComponent.h"
 #include "Enemy.generated.h"
 
 class UHealthComponent;
@@ -29,24 +31,18 @@ public:
 protected:
 	// --- Variables ---
 
-	/*
-	* TODO: Enemy architecture
-	* Enemies have an array of soft class references to the BP weapons that they hold.
-	* Also have array of "Attachment Points" (Scene) where the weapons go.
-	* Weapons are spawned during BeginPlay.
-	* Weapons are then attached to their corresponding Attachment Points.
-	*/
-
-	// Array of Blueprints for weapons this Enemy holds
+	// ChildActorComponents that are this Enemy's weapons
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
-	TArray<TSoftClassPtr<AActor>> WeaponClasses;
+	TArray<FComponentReference> WeaponChildActors;
 
-	// Locations for each corresponding weapon, ie. Index 0 = location of 0th weapon.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
-	TArray<USceneComponent*> WeaponAttachmentPoints;
-
-	// Pointers to instantiated weapons
+	// References to weapon Actors
 	TArray<AActor*> Weapons;
+
+	// References to EnemyWeaponComponents
+	TArray<UEnemyWeaponComponent*> WeaponComponents;
+
+	// TODO: Testing stuff things with component communication
+	bool bHasFired;
 
 	// --- Functions ---
 
