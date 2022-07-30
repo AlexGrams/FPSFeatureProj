@@ -59,30 +59,14 @@ void UTP_WeaponComponent::OnFirePressed()
 
 	if (IsAutomatic)
 	{
-		// Bind AutoFireFunction if it hasn't been bound already.
-		if (!AutoFireDelegate.IsBound())
-		{
-			AutoFireDelegate.BindUFunction(this, TEXT("AutoFireFunction"));
-		}
-
-		FireInputHeld = true;
-		CanFire = false;
-
-		// Set timer only if it is not already running
-		if (Character != nullptr)
-		{
-			if (!Character->GetWorldTimerManager().IsTimerActive(AutoFireHandle))
-			{
-				Character->GetWorldTimerManager().SetTimer(AutoFireHandle, AutoFireDelegate, FireInterval, true);
-			}
-		}
+		StartAutoFire();
 	}
 }
 
 // Reset automatic fire variables 
 void UTP_WeaponComponent::OnFireReleased()
 {
-	FireInputHeld = false;
+	EndAutoFire();
 }
 
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)

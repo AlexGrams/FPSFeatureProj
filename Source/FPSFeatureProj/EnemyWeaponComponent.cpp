@@ -42,11 +42,24 @@ void UEnemyWeaponComponent::TickComponent(float DeltaTime, enum ELevelTick TickT
 	//TestPrint();
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Enemy weapon ticking")));
 
-	// TODO: Clean up, one line
-	FVector Start = GetOwner()->GetActorLocation();
-	FVector End = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
-	FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
-	this->GetOwner()->SetActorRotation(LookRotation);
+
+	// Looks at player and shoots continuously if they are close
+	if (FVector::Distance(GetOwner()->GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation()) <= 100.0f)
+	{
+		// TODO: Clean up, one line
+		FVector Start = GetOwner()->GetActorLocation();
+		FVector End = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+		FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+		this->GetOwner()->SetActorRotation(LookRotation);
+
+		// Fire continuously
+		StartAutoFire();
+	}
+	else if (FireInputHeld)
+	{
+		EndAutoFire();
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Player out of range")));
+	}
 }
 
 void UEnemyWeaponComponent::TestPrint()
@@ -56,4 +69,9 @@ void UEnemyWeaponComponent::TestPrint()
 	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("This component can tick")));
 	if (IsRegistered())
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Component is registered")));
+}
+
+FRotator UEnemyWeaponComponent::GetProjectileRotation() const
+{
+	return GetOwner()->GetActorRotation();
 }

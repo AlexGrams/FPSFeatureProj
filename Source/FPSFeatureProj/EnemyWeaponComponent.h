@@ -34,4 +34,9 @@ public:
 	// TODO: Testing function
 	void TestPrint();
 	
+protected:
+	// --- Functions ---
+
+	// Get spawn rotation for a projectile: forward direction of Weapon model
+	virtual FRotator GetProjectileRotation() const override;
 };

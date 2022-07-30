@@ -22,30 +22,18 @@ void UBaseWeaponComponent::BeginPlay()
 
 void UBaseWeaponComponent::Fire()
 {
-	// TODO: Testing
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Firing gun")));
-	if (!IsValid(Character))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Character null")));
-	}
-	else if (!IsValid(Character->GetController()))
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Controller null")));
-	}
-
 	// TODO: Better pointer validation checks
 	if (!IsValid(Character) || Character == nullptr || Character->GetController() == nullptr || CurrentAmmo <= 0)
 	{
 		return;
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Purple, FString::Printf(TEXT("Firing gun2 ")));
 
 	CurrentAmmo -= 1;
 
-	// Try to fire a projectile
 	if (IsHitscan)
 	{
-		// Hitscan weapon
+		// Firing for Hitscan weapon
+
 		FHitResult OutHit = FHitResult();
 		FVector Start = GetHitscanStart();//Character->GetFirstPersonCameraComponent()->GetComponentLocation();
 		FVector End = Start + HitscanRange * GetHitscanDirection();//Character->GetFirstPersonCameraComponent()->GetForwardVector();
@@ -86,7 +74,8 @@ void UBaseWeaponComponent::Fire()
 	}
 	else if (ProjectileClass != nullptr)
 	{
-		// Projectile weapon
+		// Firing for Projectile weapon
+
 		UWorld* const World = GetWorld();
 		if (World != nullptr)
 		{
@@ -107,7 +96,7 @@ void UBaseWeaponComponent::Fire()
 
 			// Spawn the projectile at the muzzle
 			AFPSFeatureProjProjectile* SpawnedProjectile = World->SpawnActor<AFPSFeatureProjProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
-			if (SpawnedProjectile->Implements<UProjectileInterface>())
+			if (IsValid(SpawnedProjectile) && SpawnedProjectile->Implements<UProjectileInterface>())
 			{
 				IProjectileInterface* Interface = Cast<IProjectileInterface>(SpawnedProjectile);
 				AController* EventInstigator = Character->GetController();
@@ -152,6 +141,32 @@ void UBaseWeaponComponent::AutoFireFunction()
 		CanFire = true;
 		Character->GetWorldTimerManager().ClearTimer(AutoFireHandle);
 	}
+}
+
+void UBaseWeaponComponent::StartAutoFire()
+{
+	// Bind AutoFireFunction if it hasn't been bound already.
+	if (!AutoFireDelegate.IsBound())
+	{
+		AutoFireDelegate.BindUFunction(this, TEXT("AutoFireFunction"));
+	}
+
+	FireInputHeld = true;
+	CanFire = false;
+
+	// Set timer only if it is not already running
+	if (Character != nullptr)
+	{
+		if (!Character->GetWorldTimerManager().IsTimerActive(AutoFireHandle))
+		{
+			Character->GetWorldTimerManager().SetTimer(AutoFireHandle, AutoFireDelegate, FireInterval, true);
+		}
+	}
+}
+
+void UBaseWeaponComponent::EndAutoFire()
+{
+	FireInputHeld = false;
 }
 
 void UBaseWeaponComponent::PlayFireAnimation()
