@@ -106,6 +106,9 @@ protected:
 	// Get the direction of a hitscan line trace
 	virtual FVector GetHitscanDirection() const { return Character->GetActorForwardVector(); }
 
+	// Get spawn rotation for a projectile
+	virtual FRotator GetProjectileRotation() const { return IsValid(Character) ? Character->GetActorRotation() : FRotator::ZeroRotator; }
+
 	// Play a firing animation, if specified
 	virtual void PlayFireAnimation();
 };

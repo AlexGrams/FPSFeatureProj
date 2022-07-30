@@ -41,7 +41,6 @@ void AEnemy::BeginPlay()
 	}
 	for (auto& Thing : WeaponComponents)
 	{
-		Thing->TestPrint();
 		bHasFired = false;
 	}
 }
@@ -57,8 +56,8 @@ void AEnemy::Tick(float DeltaTime)
 		bHasFired = true;
 		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Attempting omega firing")));
 
-		// TODO: Disabled until solution found for missing fire parameters
-		//WeaponComponents.Last()->Fire();
+		WeaponComponents.Last()->Fire();
+		WeaponComponents.Last()->TestPrint();
 	}
 }
 

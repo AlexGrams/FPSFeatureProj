@@ -56,6 +56,9 @@ protected:
 	// Get the direction of a hitscan line trace
 	virtual FVector GetHitscanDirection() const override;
 
+	// Get spawn rotation for a projectile
+	virtual FRotator GetProjectileRotation() const override;
+
 	// Play first person firing animation
 	virtual void PlayFireAnimation() override;
 

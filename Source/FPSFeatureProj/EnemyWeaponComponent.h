@@ -28,6 +28,9 @@ public:
 	UFUNCTION()
 	void BeginPlay();
 
+	// Tick function
+	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
+
 	// TODO: Testing function
 	void TestPrint();
 	

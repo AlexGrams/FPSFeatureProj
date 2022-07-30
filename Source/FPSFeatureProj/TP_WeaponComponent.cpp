@@ -45,6 +45,12 @@ FVector UTP_WeaponComponent::GetHitscanDirection() const
 	return FPSCharacter->GetFirstPersonCameraComponent()->GetForwardVector(); 
 }
 
+FRotator UTP_WeaponComponent::GetProjectileRotation() const
+{
+	APlayerController* PlayerController = Cast<APlayerController>(Character->GetController());
+	return PlayerController->PlayerCameraManager->GetCameraRotation();
+}
+
 // Fires continuously if automatic, or fires weapon once if not.
 void UTP_WeaponComponent::OnFirePressed()
 {
