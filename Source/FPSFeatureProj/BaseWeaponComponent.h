@@ -74,6 +74,13 @@ public:
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
 	void Reload();
 
+	// Start automatic firing. Weapon will not stop firing until EndAutoFire() is called.
+	// IsAutomatic should be checked before this function is called.
+	void StartAutoFire();
+
+	// Ends automatic firing.
+	void EndAutoFire();
+
 protected:
 	// --- Variables
 	
@@ -111,11 +118,4 @@ protected:
 
 	// Play a firing animation, if specified
 	virtual void PlayFireAnimation();
-
-	// Start automatic firing. Weapon will not stop firing until EndAutoFire() is called.
-	// IsAutomatic should be checked before this function is called.
-	void StartAutoFire();
-
-	// Ends automatic firing.
-	void EndAutoFire();
 };

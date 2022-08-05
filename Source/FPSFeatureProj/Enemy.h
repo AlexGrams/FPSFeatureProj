@@ -50,6 +50,16 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	// --- Functions ---
+
+	// Begin firing all of this Enemy's Weapons
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void FireWeapons();
+
+	// End firing all Weapons
+	UFUNCTION(BlueprintCallable, Category = Weapon)
+	void EndFiringWeapons();
+
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 

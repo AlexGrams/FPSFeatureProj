@@ -61,3 +61,28 @@ void AEnemy::Tick(float DeltaTime)
 	}
 }
 
+void AEnemy::FireWeapons()
+{
+	for (auto& EnemyWeaponComponent : WeaponComponents)
+	{
+		if (EnemyWeaponComponent->IsAutomatic)
+		{
+			EnemyWeaponComponent->StartAutoFire();
+		}
+		else
+		{
+			EnemyWeaponComponent->Fire();
+		}
+	}
+}
+
+void AEnemy::EndFiringWeapons()
+{
+	for (auto& EnemyWeaponComponent : WeaponComponents)
+	{
+		if (EnemyWeaponComponent->IsAutomatic)
+		{
+			EnemyWeaponComponent->EndAutoFire();
+		}
+	}
+}

@@ -43,23 +43,25 @@ void UEnemyWeaponComponent::TickComponent(float DeltaTime, enum ELevelTick TickT
 	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Enemy weapon ticking")));
 
 
-	// Looks at player and shoots continuously if they are close
-	if (FVector::Distance(GetOwner()->GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation()) <= 100.0f)
-	{
-		// TODO: Clean up, one line
-		FVector Start = GetOwner()->GetActorLocation();
-		FVector End = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
-		FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
-		this->GetOwner()->SetActorRotation(LookRotation);
+	// Continuously look at Player
+	// TODO: Clean up, one line
+	FVector Start = GetOwner()->GetActorLocation();
+	FVector End = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+	FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
+	this->GetOwner()->SetActorRotation(LookRotation);
 
-		// Fire continuously
-		StartAutoFire();
-	}
-	else if (FireInputHeld)
-	{
-		EndAutoFire();
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Player out of range")));
-	}
+	//// Looks at player and shoots continuously if they are close
+	//if (FVector::Distance(GetOwner()->GetActorLocation(), UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation()) <= 100.0f)
+	//{
+
+	//	// Fire continuously
+	//	StartAutoFire();
+	//}
+	//else if (FireInputHeld)
+	//{
+	//	EndAutoFire();
+	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Player out of range")));
+	//}
 }
 
 void UEnemyWeaponComponent::TestPrint()
