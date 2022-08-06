@@ -33,12 +33,17 @@ void UHealthComponent::TakeDamage(AActor* DamagedActor, float Damage, const clas
 	// Can't take damage if dead already. Could change to allow overkill by moving check inward.
 	if (!IsDead)
 	{
+		IHealthInterface* Interface = Cast<IHealthInterface>(Owner);
+
 		Health = FMath::Clamp(Health - Damage, 0.0f, DefaultHealth);
+		if (Owner->Implements<UHealthInterface>())
+		{
+			Interface->Execute_DamageTaken(Owner, DamagedActor, Damage, DamageType, InstigatedBy, DamageCauser);
+		}
 
 		if (Health <= 0)
 		{
 			// Check if parent has HealthInterface, then call HealthDepleted.
-			IHealthInterface* Interface = Cast<IHealthInterface>(Owner);
 
 			if (Owner->Implements<UHealthInterface>())
 			{

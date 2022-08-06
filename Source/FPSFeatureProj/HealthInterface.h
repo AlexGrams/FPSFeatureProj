@@ -23,6 +23,10 @@ class FPSFEATUREPROJ_API IHealthInterface
 	// Add interface functions to this class. This is the class that will be inherited to implement this interface.
 public:
 	// --- Functions ---
+
+	// Called when this object takes damage
+	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health")
+	void DamageTaken(AActor* DamagedActor, float Damage, const class UDamageType* DamageType, class AController* InstigatedBy, AActor* DamageCauser);
 	
 	// Called when this object no longer has any health
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Health")

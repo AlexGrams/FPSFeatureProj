@@ -65,6 +65,11 @@ void AEnemy::FireWeapons()
 {
 	for (auto& EnemyWeaponComponent : WeaponComponents)
 	{
+		if (!IsValid(EnemyWeaponComponent))
+		{
+			continue;
+		}
+
 		if (EnemyWeaponComponent->IsAutomatic)
 		{
 			EnemyWeaponComponent->StartAutoFire();
