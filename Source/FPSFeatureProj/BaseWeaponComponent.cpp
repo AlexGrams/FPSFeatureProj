@@ -5,6 +5,11 @@
 #include "FPSFeatureProjProjectile.h"
 #include "Kismet/GameplayStatics.h"
 
+// Custom collision channels (For future reference. Some might not be used.)
+#define ECC_Projectile			ECC_GameTraceChannel1
+#define ECC_EnemyProjectile		ECC_GameTraceChannel2
+#define ECC_Enemy				ECC_GameTraceChannel3
+
 // Sets default values for this component's properties
 UBaseWeaponComponent::UBaseWeaponComponent()
 {
@@ -39,7 +44,8 @@ void UBaseWeaponComponent::Fire()
 		FVector End = Start + HitscanRange * GetHitscanDirection();//Character->GetFirstPersonCameraComponent()->GetForwardVector();
 
 		// List of types that hitscan bullet can hit
-		FCollisionObjectQueryParams ObjectQueryParams = FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic) | ECC_TO_BITFIELD(ECC_Pawn) | ECC_TO_BITFIELD(ECC_PhysicsBody));
+		FCollisionObjectQueryParams ObjectQueryParams = FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic) | 
+			ECC_TO_BITFIELD(ECC_Pawn) | ECC_TO_BITFIELD(ECC_PhysicsBody) | ECC_TO_BITFIELD(ECC_Enemy));
 		// Line Trace parameters
 		FCollisionQueryParams Params = FCollisionQueryParams(FName(TEXT("Hitscan")), true, Character);
 		bool Result = GetWorld()->LineTraceSingleByObjectType(OutHit, Start, End, ObjectQueryParams, Params);

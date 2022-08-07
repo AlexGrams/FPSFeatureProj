@@ -50,7 +50,7 @@ void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// Testing weapon firing
+	// TODO: Testing weapon firing
 	if (!bHasFired)
 	{
 		bHasFired = true;
