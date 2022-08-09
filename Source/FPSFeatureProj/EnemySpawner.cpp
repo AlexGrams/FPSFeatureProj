@@ -20,11 +20,14 @@ void AEnemySpawner::BeginPlay()
 
 void AEnemySpawner::SpawnEnemy()
 {
-	if (!IsValid(EnemyToSpawn))
+	if (!IsValid(EnemyToSpawnClass))
 	{
 		return;
 	}
 
-	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(EnemyToSpawn, NULL, NULL, true);
+	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(EnemyToSpawnClass, GetActorLocation(), GetActorRotation(), ActorSpawnParams);
 }
 

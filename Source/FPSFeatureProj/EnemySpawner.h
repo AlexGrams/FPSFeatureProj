@@ -30,6 +30,6 @@ public:
 
 	// Enemy that this spawner spawns
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spawning")
-	UClass* EnemyToSpawn;
+	TSubclassOf<class AActor> EnemyToSpawnClass;
 
 };
