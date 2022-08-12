@@ -48,9 +48,6 @@ protected:
 	// References to EnemyWeaponComponents
 	TArray<UEnemyWeaponComponent*> WeaponComponents;
 
-	// TODO: Testing stuff things with component communication
-	bool bHasFired;
-
 	// --- Functions ---
 
 	// Called when the game starts or when spawned

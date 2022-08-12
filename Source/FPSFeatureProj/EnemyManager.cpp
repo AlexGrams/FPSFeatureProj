@@ -21,16 +21,41 @@ void AEnemyManager::BeginPlay()
 	TArray<AActor*> TempEnemySpawners;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemySpawner::StaticClass(), TempEnemySpawners);
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("TODO: Testing: Number of TempEnemySpawners = %d"), TempEnemySpawners.Num()));
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("TODO: Testing: Number of EnemySpawners = %d"), EnemySpawners.Num()));
 	for (AActor* Actor : TempEnemySpawners)
 	{
 		AEnemySpawner* SpawnerToAdd = Cast<AEnemySpawner>(Actor);
 		EnemySpawners.Add(SpawnerToAdd);
 		SpawnerToAdd->SetEnemyManager(this);
 	}
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("TODO: Testing: Number of EnemySpawners = %d"), EnemySpawners.Num()));
+}
+
+void AEnemyManager::StartWave()
+{
+	if (EnemySpawners.Num() <= 0)
+	{
+		return;
+	}
+
+	// Spawn one Enemy at each EnemySpawner until all wave Enemies have been spawned. Spawn multiple at the same EnemySpawner if there are more Enemies than Spawners.
+	int EnemySpawnerIndex = 0;
+
+	for (FWaveEnemies Wave : WaveEnemies)
+	{
+		if (!IsValid(Wave.Enemy))
+		{
+			continue;
+		}
+
+		for (int i = 0; i < Wave.Count; i++)
+		{
+			if (EnemySpawnerIndex >= EnemySpawners.Num())
+			{
+				EnemySpawnerIndex = 0;
+			}
+
+			EnemySpawners[EnemySpawnerIndex++]->SpawnEnemy(Wave.Enemy);
+		}
+	}
 }
 
 void AEnemyManager::IncrementNumAliveEnemies()

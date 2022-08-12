@@ -18,6 +18,16 @@ public:
 	// Sets default values for this actor's properties
 	AEnemySpawner();
 
+	// --- Functions ---
+	
+	// Spawns one of the specified Enemy. Will spawn regardless of blocking objects.
+	UFUNCTION(BlueprintCallable, Category = "Spawning")
+	void SpawnEnemy(TSubclassOf<class AEnemy> EnemyToSpawnClass);
+
+	// Spawn one default Enemy. 
+	UFUNCTION(BlueprintCallable, Category = "Spawning")
+	void SpawnDefaultEnemy();
+
 protected:
 	// --- Variables ---
 
@@ -25,10 +35,6 @@ protected:
 	AEnemyManager* EnemyManager;
 	
 	// --- Functions ---
-
-	// Spawn one Enemy. Will spawn regardless of blocking objects.
-	UFUNCTION(BlueprintCallable, Category = "Spawning")
-	void SpawnEnemy();
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
@@ -38,7 +44,7 @@ public:
 
 	// Enemy that this spawner spawns
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spawning")
-	TSubclassOf<class AActor> EnemyToSpawnClass;
+	TSubclassOf<class AActor> DefaultEnemyToSpawnClass;
 
 	// --- Functions
 	

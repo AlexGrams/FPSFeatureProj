@@ -18,30 +18,11 @@ AEnemy::AEnemy()
 void AEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	
-	/*
-	* TODO: CAN BE DONE IN BLUEPRINTS I THINK
-	* 
-	* Load weapon classes asynchronously.
-	* Add to Weapons TArray.
-	* Child to corresponding WeaponAttachmentPoint.
-	* Place at origin of parent (ie WeaponAttachmentPoint position).
-	*/
 
 	for (auto& Weapon : WeaponChildActors)
 	{
 		Weapons.Add(Cast<UChildActorComponent>(Weapon.GetComponent(this))->GetChildActor());
 		WeaponComponents.Add(Cast<UEnemyWeaponComponent>(Weapons.Last()->GetComponentByClass(UEnemyWeaponComponent::StaticClass())));
-	}
-
-	// TODO: Testing what previous code does
-	for (auto& Thing : Weapons)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Something was added %s"), *Thing->GetActorNameOrLabel()));
-	}
-	for (auto& Thing : WeaponComponents)
-	{
-		bHasFired = false;
 	}
 }
 
@@ -49,16 +30,6 @@ void AEnemy::BeginPlay()
 void AEnemy::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
-	// TODO: Testing weapon firing
-	if (!bHasFired)
-	{
-		bHasFired = true;
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Attempting omega firing")));
-
-		WeaponComponents.Last()->Fire();
-		WeaponComponents.Last()->TestPrint();
-	}
 }
 
 void AEnemy::FireWeapons()

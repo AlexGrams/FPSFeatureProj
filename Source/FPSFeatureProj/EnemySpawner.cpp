@@ -20,7 +20,7 @@ void AEnemySpawner::BeginPlay()
 	
 }
 
-void AEnemySpawner::SpawnEnemy()
+void AEnemySpawner::SpawnEnemy(TSubclassOf<class AEnemy> EnemyToSpawnClass)
 {
 	if (!IsValid(EnemyToSpawnClass))
 	{
@@ -35,3 +35,17 @@ void AEnemySpawner::SpawnEnemy()
 	EnemyManager->IncrementNumAliveEnemies();
 }
 
+void AEnemySpawner::SpawnDefaultEnemy()
+{
+	if (!IsValid(DefaultEnemyToSpawnClass))
+	{
+		return;
+	}
+
+	FActorSpawnParameters ActorSpawnParams;
+	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
+
+	AActor* SpawnedEnemy = GetWorld()->SpawnActor<AActor>(DefaultEnemyToSpawnClass, GetActorLocation(), GetActorRotation(), ActorSpawnParams);
+	Cast<AEnemy>(SpawnedEnemy)->SetEnemyManager(EnemyManager);
+	EnemyManager->IncrementNumAliveEnemies();
+}

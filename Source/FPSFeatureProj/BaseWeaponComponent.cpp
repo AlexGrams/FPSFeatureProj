@@ -126,7 +126,6 @@ void UBaseWeaponComponent::Fire()
 // Reload weapon
 void UBaseWeaponComponent::Reload()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("TODO: reloading action")));
 	CurrentAmmo = MaxAmmo;
 }
 
