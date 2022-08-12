@@ -3,6 +3,8 @@
 
 #include "EnemySpawner.h"
 #include "Engine/World.h"
+#include "Enemy.h"
+#include "EnemyManager.h"
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -28,6 +30,8 @@ void AEnemySpawner::SpawnEnemy()
 	FActorSpawnParameters ActorSpawnParams;
 	ActorSpawnParams.SpawnCollisionHandlingOverride = ESpawnActorCollisionHandlingMethod::AdjustIfPossibleButAlwaysSpawn;
 
-	AActor* SpawnedActor = GetWorld()->SpawnActor<AActor>(EnemyToSpawnClass, GetActorLocation(), GetActorRotation(), ActorSpawnParams);
+	AActor* SpawnedEnemy = GetWorld()->SpawnActor<AActor>(EnemyToSpawnClass, GetActorLocation(), GetActorRotation(), ActorSpawnParams);
+	Cast<AEnemy>(SpawnedEnemy)->SetEnemyManager(EnemyManager);
+	EnemyManager->IncrementNumAliveEnemies();
 }
 

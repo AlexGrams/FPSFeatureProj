@@ -6,6 +6,9 @@
 #include "GameFramework/Actor.h"
 #include "EnemySpawner.generated.h"
 
+// Forward declaration
+class AEnemyManager;
+
 UCLASS()
 class FPSFEATUREPROJ_API AEnemySpawner : public AActor
 {
@@ -16,6 +19,11 @@ public:
 	AEnemySpawner();
 
 protected:
+	// --- Variables ---
+
+	// Pointer to this level's EnemyManager
+	AEnemyManager* EnemyManager;
+	
 	// --- Functions ---
 
 	// Spawn one Enemy. Will spawn regardless of blocking objects.
@@ -31,5 +39,9 @@ public:
 	// Enemy that this spawner spawns
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Spawning")
 	TSubclassOf<class AActor> EnemyToSpawnClass;
+
+	// --- Functions
+	
+	virtual void SetEnemyManager(AEnemyManager* NewEnemyManager) { EnemyManager = NewEnemyManager; }
 
 };

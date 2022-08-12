@@ -10,6 +10,7 @@
 #include "Enemy.generated.h"
 
 class UHealthComponent;
+class AEnemyManager;
 
 UCLASS()
 class FPSFEATUREPROJ_API AEnemy : public ACharacter
@@ -28,12 +29,18 @@ public:
 	// Returns HealthComponent subobject
 	FORCEINLINE class UHealthComponent* GetHealthComponent() const { return HealthComponent; }
 
+	FORCEINLINE void SetEnemyManager(AEnemyManager* NewEnemyManager) { EnemyManager = NewEnemyManager; }
+
 protected:
 	// --- Variables ---
 
 	// ChildActorComponents that are this Enemy's weapons
 	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Weapon)
 	TArray<FComponentReference> WeaponChildActors;
+
+	// This world's EnemyManager
+	UPROPERTY(BlueprintReadOnly, Category = "Management")
+	AEnemyManager* EnemyManager;
 
 	// References to weapon Actors
 	TArray<AActor*> Weapons;
