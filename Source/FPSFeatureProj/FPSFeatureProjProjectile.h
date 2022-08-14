@@ -24,6 +24,11 @@ class AFPSFeatureProjProjectile : public AActor, public IProjectileInterface
 	UProjectileMovementComponent* ProjectileMovement;
 
 protected:
+
+	// Should this projectile bounce off the environment or be destroyed?
+	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = "Collision")
+	bool bCanBounce;
+
 	float Damage;
 	AController* PlayerController;
 	AActor* Shooter;

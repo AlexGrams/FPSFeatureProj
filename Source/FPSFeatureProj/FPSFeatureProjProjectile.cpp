@@ -58,11 +58,18 @@ void AFPSFeatureProjProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* Othe
 		Destroy();
 	}
 
-	// Only add impulse and destroy projectile if we hit a physics
-	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr) && OtherComp->IsSimulatingPhysics())
+	if ((OtherActor != nullptr) && (OtherActor != this) && (OtherComp != nullptr))
 	{
-		OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
-
-		Destroy();
+		// Only add impulse and destroy projectile if we hit a physics object
+		if (OtherComp->IsSimulatingPhysics())
+		{
+			OtherComp->AddImpulseAtLocation(GetVelocity() * 100.0f, GetActorLocation());
+			Destroy();
+		}
+		// Destroy this projectile if it can't bounce off other objects
+		else if (!bCanBounce)
+		{
+			Destroy();
+		}
 	}
 }
