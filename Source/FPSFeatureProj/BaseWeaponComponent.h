@@ -68,7 +68,7 @@ public:
 
 	/** Make the weapon Fire a Projectile */
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
-	void Fire();
+	virtual void Fire();
 
 	// Reload weapon
 	UFUNCTION(BlueprintCallable, Category = "Weapon")
