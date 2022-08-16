@@ -30,4 +30,7 @@ protected:
 
 	// The half angle (angle between center of cone and side) of the shotgun spread in degrees.
 	float SpreadHalfAngleDegrees;
+
+	// Get the direction of a hitscan line trace
+	virtual FVector GetHitscanDirection() const override;
 };

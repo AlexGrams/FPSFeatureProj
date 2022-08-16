@@ -118,4 +118,7 @@ protected:
 
 	// Play a firing animation, if specified
 	virtual void PlayFireAnimation();
+
+	// Uses a line trace to fire at and damage a target. Called when a hitscan weapon is fired, or can be called separately from regular Fire() function.
+	void FireHitscanWeapon();
 };

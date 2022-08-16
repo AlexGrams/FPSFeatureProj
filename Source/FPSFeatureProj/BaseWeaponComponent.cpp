@@ -37,46 +37,7 @@ void UBaseWeaponComponent::Fire()
 
 	if (IsHitscan)
 	{
-		// Firing for Hitscan weapon
-
-		FHitResult OutHit = FHitResult();
-		FVector Start = GetHitscanStart();//Character->GetFirstPersonCameraComponent()->GetComponentLocation();
-		FVector End = Start + HitscanRange * GetHitscanDirection();//Character->GetFirstPersonCameraComponent()->GetForwardVector();
-
-		// List of types that hitscan bullet can hit
-		FCollisionObjectQueryParams ObjectQueryParams = FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic) | 
-			ECC_TO_BITFIELD(ECC_Pawn) | ECC_TO_BITFIELD(ECC_PhysicsBody) | ECC_TO_BITFIELD(ECC_Enemy));
-		// Line Trace parameters
-		FCollisionQueryParams Params = FCollisionQueryParams(FName(TEXT("Hitscan")), true, Character);
-		bool Result = GetWorld()->LineTraceSingleByObjectType(OutHit, Start, End, ObjectQueryParams, Params);
-
-		if (Result)
-		{
-			// Actual damage that was applied
-			float TakenDamage = 0.0f;
-
-			// TODO: Find best place to set these
-			AActor* DamagedActor = OutHit.GetActor();
-			AController* EventInstigator = Character->GetController();
-			AActor* DamageCauser = Character;
-			TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
-
-			if (!DamagedActor)
-			{
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Unknown hit object")));
-			}
-			else if (Damage != 0.f)
-			{
-				// make sure we have a good damage type
-				TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
-				FDamageEvent DamageEvent(ValidDamageTypeClass);
-				TakenDamage = DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-			}
-		}
-		else
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Not valid hit")));
-		}
+		FireHitscanWeapon();
 	}
 	else if (ProjectileClass != nullptr)
 	{
@@ -121,6 +82,46 @@ void UBaseWeaponComponent::Fire()
 
 	// Try and play a firing animation if specified
 	PlayFireAnimation();
+}
+
+void UBaseWeaponComponent::FireHitscanWeapon()
+{
+	// Firing for Hitscan weapon
+
+	FHitResult OutHit = FHitResult();
+	FVector Start = GetHitscanStart();//Character->GetFirstPersonCameraComponent()->GetComponentLocation();
+	FVector End = Start + HitscanRange * GetHitscanDirection();//Character->GetFirstPersonCameraComponent()->GetForwardVector();
+
+	// List of types that hitscan bullet can hit
+	FCollisionObjectQueryParams ObjectQueryParams = FCollisionObjectQueryParams(ECC_TO_BITFIELD(ECC_WorldStatic) | ECC_TO_BITFIELD(ECC_WorldDynamic) |
+		ECC_TO_BITFIELD(ECC_Pawn) | ECC_TO_BITFIELD(ECC_PhysicsBody) | ECC_TO_BITFIELD(ECC_Enemy));
+	// Line Trace parameters
+	FCollisionQueryParams Params = FCollisionQueryParams(FName(TEXT("Hitscan")), true, Character);
+	bool Result = GetWorld()->LineTraceSingleByObjectType(OutHit, Start, End, ObjectQueryParams, Params);
+
+	if (Result)
+	{
+		// Actual damage that was applied
+		float TakenDamage = 0.0f;
+
+		// TODO: Find best place to set these
+		AActor* DamagedActor = OutHit.GetActor();
+		AController* EventInstigator = Character->GetController();
+		AActor* DamageCauser = Character;
+		TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
+
+		if (!DamagedActor)
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Unknown hit object")));
+		}
+		else if (Damage != 0.f)
+		{
+			// make sure we have a good damage type
+			TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
+			FDamageEvent DamageEvent(ValidDamageTypeClass);
+			TakenDamage = DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
+		}
+	}
 }
 
 // Reload weapon
