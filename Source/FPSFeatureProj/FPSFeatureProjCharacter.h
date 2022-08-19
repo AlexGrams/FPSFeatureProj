@@ -19,6 +19,9 @@ class USoundBase;
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUseItem);
 // Delegate for releasing held input
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnUseItemRelease);
+// For press/release of secondary input
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSecondaryAction);
+DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnSecondaryActionRelease);
 // Similar delegate for reloading
 DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnReload);
 
@@ -80,6 +83,14 @@ public:
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnUseItemRelease OnUseItemRelease;
 
+	// Delegate for starting secondary action
+	UPROPERTY(BlueprintAssignable, Category = "Interaction")
+	FOnSecondaryAction OnSecondaryAction;
+
+	// Delegate for releasing secondary action
+	UPROPERTY(BlueprintAssignable, Category = "Interaction")
+	FOnSecondaryActionRelease OnSecondaryActionRelease;
+
 	// Delegate for reloading
 	UPROPERTY(BlueprintAssignable, Category = "Interaction")
 	FOnReload OnReload;
@@ -89,10 +100,16 @@ protected:
 	virtual void Tick(float DeltaSeconds);
 	
 	/** Fires a projectile. */
-	void OnPrimaryAction();
+	void OnPrimaryInput();
 
 	// Player released PrimaryAction input
-	void OnPrimaryActionRelease();
+	void OnPrimaryInputRelease();
+
+	// Player started SecondaryAction input
+	void OnSecondaryInput();
+
+	// Player released SecondaryAction input
+	void OnSecondaryInputRelease();
 
 	// Reload weapon
 	void OnReloadAction();

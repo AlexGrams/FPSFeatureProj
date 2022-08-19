@@ -85,8 +85,12 @@ void AFPSFeatureProjCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAction("Jump", IE_Released, this, &ACharacter::StopJumping);
 
 	// Bind fire events
-	PlayerInputComponent->BindAction("PrimaryAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnPrimaryAction);
-	PlayerInputComponent->BindAction("PrimaryAction", IE_Released, this, &AFPSFeatureProjCharacter::OnPrimaryActionRelease);
+	PlayerInputComponent->BindAction("PrimaryAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnPrimaryInput);
+	PlayerInputComponent->BindAction("PrimaryAction", IE_Released, this, &AFPSFeatureProjCharacter::OnPrimaryInputRelease);
+
+	// Bind secondary fire events
+	PlayerInputComponent->BindAction("SecondaryAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnSecondaryInput);
+	PlayerInputComponent->BindAction("SecondaryAction", IE_Released, this, &AFPSFeatureProjCharacter::OnSecondaryInputRelease);
 
 	// Bind reload event
 	PlayerInputComponent->BindAction("ReloadAction", IE_Pressed, this, &AFPSFeatureProjCharacter::OnReloadAction);
@@ -114,15 +118,25 @@ void AFPSFeatureProjCharacter::SetupPlayerInputComponent(class UInputComponent* 
 	PlayerInputComponent->BindAxis("Look Up / Down Gamepad", this, &AFPSFeatureProjCharacter::LookUpAtRate);
 }
 
-void AFPSFeatureProjCharacter::OnPrimaryAction()
+void AFPSFeatureProjCharacter::OnPrimaryInput()
 {
 	// Trigger the OnUseItem Event
 	OnUseItem.Broadcast();
 }
 
-void AFPSFeatureProjCharacter::OnPrimaryActionRelease()
+void AFPSFeatureProjCharacter::OnPrimaryInputRelease()
 {
 	OnUseItemRelease.Broadcast();
+}
+
+void AFPSFeatureProjCharacter::OnSecondaryInput()
+{
+	OnSecondaryAction.Broadcast();
+}
+
+void AFPSFeatureProjCharacter::OnSecondaryInputRelease()
+{
+	OnSecondaryActionRelease.Broadcast();
 }
 
 void AFPSFeatureProjCharacter::OnReloadAction()
@@ -174,7 +188,7 @@ void AFPSFeatureProjCharacter::BeginTouch(const ETouchIndex::Type FingerIndex, c
 	}
 	if ((FingerIndex == TouchItem.FingerIndex) && (TouchItem.bMoved == false))
 	{
-		OnPrimaryAction();
+		OnPrimaryInput();
 	}
 	TouchItem.bIsPressed = true;
 	TouchItem.FingerIndex = FingerIndex;

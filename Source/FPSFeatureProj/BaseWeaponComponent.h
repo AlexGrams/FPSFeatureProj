@@ -88,10 +88,13 @@ protected:
 	ACharacter* Character;
 
 	// True if weapon can be fired currently
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
 	bool CanFire;
 
 	// For automatic weapons
+	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
 	FTimerHandle AutoFireHandle;
+
 	FTimerDelegate AutoFireDelegate;
 
 	// True if weapon holder is continuously attempting to fire weapon

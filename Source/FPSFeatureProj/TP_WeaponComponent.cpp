@@ -113,6 +113,8 @@ void UTP_WeaponComponent::Equip()
 	// Register with weapon-related events
 	FPSCharacter->OnUseItem.AddDynamic(this, &UTP_WeaponComponent::OnFirePressed);
 	FPSCharacter->OnUseItemRelease.AddDynamic(this, &UTP_WeaponComponent::OnFireReleased);
+	FPSCharacter->OnSecondaryAction.AddDynamic(this, &UTP_WeaponComponent::OnSecondaryPressed);
+	FPSCharacter->OnSecondaryActionRelease.AddDynamic(this, &UTP_WeaponComponent::OnSecondaryReleased);
 	FPSCharacter->OnReload.AddDynamic(this, &UTP_WeaponComponent::Reload);
 }
 
@@ -132,14 +134,29 @@ void UTP_WeaponComponent::Unequip()
 		{
 			FPSCharacter->OnUseItemRelease.RemoveDynamic(this, &UTP_WeaponComponent::OnFireReleased);
 		}
+
+		if (FPSCharacter->OnSecondaryAction.Contains(this, FName(TEXT("OnSecondaryPressed"))))
+		{
+			FPSCharacter->OnSecondaryAction.RemoveDynamic(this, &UTP_WeaponComponent::OnSecondaryPressed);
+		}
+		if (FPSCharacter->OnSecondaryActionRelease.Contains(this, FName(TEXT("OnSecondaryReleased"))))
+		{
+			FPSCharacter->OnSecondaryActionRelease.RemoveDynamic(this, &UTP_WeaponComponent::OnSecondaryReleased);
+		}
+
 		if (FPSCharacter->OnReload.Contains(this, FName(TEXT("Reload"))))
 		{
 			FPSCharacter->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
 		}
 
+		// Reset secondary firing changes if secondary fire was held down. Kind of hack and could have unintended behavior.
+		OnSecondaryReleased();
+
 		// Stop automatic firing if Fire input is held down.
 		if (IsAutomatic && AutoFireHandle.IsValid() && Character->GetWorldTimerManager().IsTimerActive(AutoFireHandle))
+		{
 			Character->GetWorldTimerManager().ClearTimer(AutoFireHandle);
+		}
 	}
 }
 

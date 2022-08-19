@@ -38,6 +38,12 @@ public:
 	void Unequip();
 
 protected:
+	// --- Variables ---
+
+	/** The AFPSFeatureProjCharacter holding this weapon. Separate from base class Character*/
+	UPROPERTY(BlueprintReadOnly)
+	AFPSFeatureProjCharacter* FPSCharacter;
+
 	// --- Functions ---
 
 	/** Ends gameplay for this component. */
@@ -50,6 +56,12 @@ protected:
 	UFUNCTION()
 	void OnFireReleased();
 
+	// Functions bound for player pressing/releasing secondary input
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
+	void OnSecondaryPressed();
+	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
+	void OnSecondaryReleased();
+
 	// Get the origin point of a hitscan line trace
 	virtual FVector GetHitscanStart() const override; 
 
@@ -61,8 +73,4 @@ protected:
 
 	// Play first person firing animation
 	virtual void PlayFireAnimation() override;
-
-private:
-	/** The AFPSFeatureProjCharacter holding this weapon. Separate from base class Character*/
-	AFPSFeatureProjCharacter* FPSCharacter;
 };
