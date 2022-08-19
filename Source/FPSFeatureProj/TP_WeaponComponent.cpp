@@ -24,10 +24,10 @@ UTP_WeaponComponent::UTP_WeaponComponent()
 	CurrentAmmo = MaxAmmo;
 
 	// Automatic weapon settings
-	IsAutomatic = false;
+	bIsAutomatic = false;
 	FireInterval = 0.2f;
-	FireInputHeld = false;
-	CanFire = true;
+	bFireInputHeld = false;
+	bCanFire = true;
 }
 
 void UTP_WeaponComponent::BeginPlay()
@@ -54,10 +54,10 @@ FRotator UTP_WeaponComponent::GetProjectileRotation() const
 // Fires continuously if automatic, or fires weapon once if not.
 void UTP_WeaponComponent::OnFirePressed()
 {
-	if (CanFire)
+	if (bCanFire)
 		Fire();
 
-	if (IsAutomatic)
+	if (bIsAutomatic)
 	{
 		StartAutoFire();
 	}
@@ -69,27 +69,29 @@ void UTP_WeaponComponent::OnFireReleased()
 	EndAutoFire();
 }
 
+void UTP_WeaponComponent::ResetAutoFire()
+{
+	bCanFire = true;
+	bFireInputHeld = false;
+
+	if (bIsAutomatic && IsValid(Character) && AutoFireHandle.IsValid() && Character->GetWorldTimerManager().IsTimerActive(AutoFireHandle))
+	{
+		Character->GetWorldTimerManager().ClearTimer(AutoFireHandle);
+	}
+}
+
 void UTP_WeaponComponent::EndPlay(const EEndPlayReason::Type EndPlayReason)
 {
 	Unequip();
-
-	// TODO: See if code is equivalent to calling Unequip()
-	//if(Character != nullptr)
-	//{
-	//	// Unregister from the OnUseItem Event
-	//	Character->OnUseItem.RemoveDynamic(this, &UTP_WeaponComponent::Fire);
-
-	//	// Unregister from Reload event
-	//	Character->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
-	//}
 }
 
 void UTP_WeaponComponent::AttachWeapon(AFPSFeatureProjCharacter* TargetCharacter)
 {
+	// TODO: Both variables might be the same thing. Refactor and simplify
 	Character = TargetCharacter;
 	FPSCharacter = TargetCharacter;
 
-	if(Character != nullptr)
+	if(FPSCharacter != nullptr)
 	{
 		// Attach the weapon to the First Person Character
 		FAttachmentTransformRules AttachmentRules(EAttachmentRule::SnapToTarget, true);
@@ -102,7 +104,7 @@ void UTP_WeaponComponent::AttachWeapon(AFPSFeatureProjCharacter* TargetCharacter
 
 void UTP_WeaponComponent::Equip()
 {
-	if (Character == nullptr)
+	if (FPSCharacter == nullptr)
 	{
 		return;
 	}
@@ -149,13 +151,16 @@ void UTP_WeaponComponent::Unequip()
 			FPSCharacter->OnReload.RemoveDynamic(this, &UTP_WeaponComponent::Reload);
 		}
 
-		// Reset secondary firing changes if secondary fire was held down. Kind of hack and could have unintended behavior.
-		OnSecondaryReleased();
-
-		// Stop automatic firing if Fire input is held down.
-		if (IsAutomatic && AutoFireHandle.IsValid() && Character->GetWorldTimerManager().IsTimerActive(AutoFireHandle))
+		// Reset primary firing if it is held down
+		if (bIsAutomatic && bFireInputHeld)
 		{
-			Character->GetWorldTimerManager().ClearTimer(AutoFireHandle);
+			ResetAutoFire();
+		}
+
+		// Reset secondary firing changes if secondary fire was held down.
+		if (bSecondaryInputHeld)
+		{
+			OnSecondaryReleased();
 		}
 	}
 }

@@ -39,7 +39,7 @@ public:
 
 	// Can weapon be fired by holding down fire input?
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Weapon)
-	bool IsAutomatic;
+	bool bIsAutomatic;
 
 	// How far a hitscan weapon can shoot
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Weapon)
@@ -75,7 +75,7 @@ public:
 	void Reload();
 
 	// Start automatic firing. Weapon will not stop firing until EndAutoFire() is called.
-	// IsAutomatic should be checked before this function is called.
+	// bIsAutomatic should be checked before this function is called.
 	void StartAutoFire();
 
 	// Ends automatic firing.
@@ -89,7 +89,7 @@ protected:
 
 	// True if weapon can be fired currently
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
-	bool CanFire;
+	bool bCanFire;
 
 	// For automatic weapons
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
@@ -98,7 +98,7 @@ protected:
 	FTimerDelegate AutoFireDelegate;
 
 	// True if weapon holder is continuously attempting to fire weapon
-	bool FireInputHeld;
+	bool bFireInputHeld;
 
 
 	// --- Functions ---

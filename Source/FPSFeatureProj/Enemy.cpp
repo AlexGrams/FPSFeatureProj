@@ -41,7 +41,7 @@ void AEnemy::FireWeapons()
 			continue;
 		}
 
-		if (EnemyWeaponComponent->IsAutomatic)
+		if (EnemyWeaponComponent->bIsAutomatic)
 		{
 			EnemyWeaponComponent->StartAutoFire();
 		}
@@ -56,7 +56,7 @@ void AEnemy::EndFiringWeapons()
 {
 	for (auto& EnemyWeaponComponent : WeaponComponents)
 	{
-		if (EnemyWeaponComponent->IsAutomatic)
+		if (EnemyWeaponComponent->bIsAutomatic)
 		{
 			EnemyWeaponComponent->EndAutoFire();
 		}

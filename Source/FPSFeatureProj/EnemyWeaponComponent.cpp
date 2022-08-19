@@ -57,7 +57,7 @@ void UEnemyWeaponComponent::TickComponent(float DeltaTime, enum ELevelTick TickT
 	//	// Fire continuously
 	//	StartAutoFire();
 	//}
-	//else if (FireInputHeld)
+	//else if (bFireInputHeld)
 	//{
 	//	EndAutoFire();
 	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Green, FString::Printf(TEXT("Player out of range")));

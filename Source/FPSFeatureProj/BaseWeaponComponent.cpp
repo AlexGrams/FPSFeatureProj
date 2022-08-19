@@ -138,13 +138,13 @@ void UBaseWeaponComponent::AutoFireFunction()
 		return;
 	}
 
-	if (FireInputHeld)
+	if (bFireInputHeld)
 	{
 		Fire();
 	}
 	else
 	{
-		CanFire = true;
+		bCanFire = true;
 		Character->GetWorldTimerManager().ClearTimer(AutoFireHandle);
 	}
 }
@@ -157,8 +157,8 @@ void UBaseWeaponComponent::StartAutoFire()
 		AutoFireDelegate.BindUFunction(this, TEXT("AutoFireFunction"));
 	}
 
-	FireInputHeld = true;
-	CanFire = false;
+	bFireInputHeld = true;
+	bCanFire = false;
 
 	// Set timer only if it is not already running
 	if (Character != nullptr)
@@ -172,7 +172,7 @@ void UBaseWeaponComponent::StartAutoFire()
 
 void UBaseWeaponComponent::EndAutoFire()
 {
-	FireInputHeld = false;
+	bFireInputHeld = false;
 }
 
 void UBaseWeaponComponent::PlayFireAnimation()

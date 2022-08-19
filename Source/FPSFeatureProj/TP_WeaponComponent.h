@@ -40,9 +40,13 @@ public:
 protected:
 	// --- Variables ---
 
-	/** The AFPSFeatureProjCharacter holding this weapon. Separate from base class Character*/
+	/** The AFPSFeatureProjCharacter holding this weapon. Separate from base class Character to not have to cast a lot.*/
 	UPROPERTY(BlueprintReadOnly)
 	AFPSFeatureProjCharacter* FPSCharacter;
+
+	// True when Player is holding down the secondary input.
+	UPROPERTY(BlueprintReadWrite)
+	bool bSecondaryInputHeld;
 
 	// --- Functions ---
 
@@ -61,6 +65,10 @@ protected:
 	void OnSecondaryPressed();
 	UFUNCTION(BlueprintImplementableEvent, Category = "Weapon")
 	void OnSecondaryReleased();
+
+	// Stop and reset automatic firing timers and related variables.
+	UFUNCTION(BlueprintCallable, Category = "Weapon")
+	void ResetAutoFire();
 
 	// Get the origin point of a hitscan line trace
 	virtual FVector GetHitscanStart() const override; 
