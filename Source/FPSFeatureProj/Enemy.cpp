@@ -21,8 +21,11 @@ void AEnemy::BeginPlay()
 
 	for (auto& Weapon : WeaponChildActors)
 	{
-		Weapons.Add(Cast<UChildActorComponent>(Weapon.GetComponent(this))->GetChildActor());
-		WeaponComponents.Add(Cast<UEnemyWeaponComponent>(Weapons.Last()->GetComponentByClass(UEnemyWeaponComponent::StaticClass())));
+		if (IsValid(Weapon))
+		{
+			Weapons.Add(Cast<UChildActorComponent>(Weapon.GetComponent(this))->GetChildActor());
+			WeaponComponents.Add(Cast<UEnemyWeaponComponent>(Weapons.Last()->GetComponentByClass(UEnemyWeaponComponent::StaticClass())));
+		}
 	}
 }
 
