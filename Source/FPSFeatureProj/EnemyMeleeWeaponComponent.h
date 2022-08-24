@@ -21,7 +21,8 @@ protected:
 
 	// A collider for the damaging area of this melee weapon
 	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
-	UShapeComponent* Hitbox;
+	FComponentReference HitboxComponent;
+	//UShapeComponent* Hitbox;
 
 public:
 	// --- Functions ---

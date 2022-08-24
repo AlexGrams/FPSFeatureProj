@@ -8,23 +8,27 @@
 
 void UEnemyMeleeWeaponComponent::Fire()
 {
-	//void GetOverlappingActors
-	//(
-	//	TArray< AActor* > &OverlappingActors,
-	//	TSubclassOf< AActor > ClassFilter
-	//)
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Attempting firing")));
+	if (!IsValid(HitboxComponent.GetComponent(GetOwner())))
+	{
+		return;
+	}
+
+	UShapeComponent* Hitbox = Cast<UShapeComponent>(HitboxComponent.GetComponent(GetOwner()));
 
 	if (!IsValid(Hitbox))
 	{
 		return;
 	}
 
+	// Damage the Player (or Player-related objects) if they are overlapping with the hitbox
 	TArray<AActor*> HitActors;
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Checking for colliding actors")));
 
-	// Get the Player if they are overlapping with the hitbox
 	Hitbox->GetOverlappingActors(HitActors, AFPSFeatureProjCharacter::StaticClass());
-
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Hit Players: %d"), HitActors.Num()));
+	if (HitActors.Num() > 0)
+	{
+		for (AActor* Target : HitActors)
+		{
+			DamageTarget(Target);
+		}
+	}
 }

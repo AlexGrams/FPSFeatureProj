@@ -101,26 +101,27 @@ void UBaseWeaponComponent::FireHitscanWeapon()
 
 	if (Result)
 	{
-		// Actual damage that was applied
-		float TakenDamage = 0.0f;
+		DamageTarget(OutHit.GetActor());
+	}
+}
 
-		// TODO: Find best place to set these
-		AActor* DamagedActor = OutHit.GetActor();
-		AController* EventInstigator = Character->GetController();
-		AActor* DamageCauser = Character;
-		TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
+void UBaseWeaponComponent::DamageTarget(AActor* Target)
+{
+	// Actual damage that was applied
+	float TakenDamage = 0.0f;
 
-		if (!DamagedActor)
-		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Unknown hit object")));
-		}
-		else if (Damage != 0.f)
-		{
-			// make sure we have a good damage type
-			TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
-			FDamageEvent DamageEvent(ValidDamageTypeClass);
-			TakenDamage = DamagedActor->TakeDamage(Damage, DamageEvent, EventInstigator, DamageCauser);
-		}
+	TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
+
+	if (!IsValid(Target))
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Unknown weapon target")));
+	}
+	else if (Damage != 0.f)
+	{
+		// make sure we have a good damage type
+		TSubclassOf<UDamageType> const ValidDamageTypeClass = DamageTypeClass ? DamageTypeClass : TSubclassOf<UDamageType>(UDamageType::StaticClass());
+		FDamageEvent DamageEvent(ValidDamageTypeClass);
+		TakenDamage = Target->TakeDamage(Damage, DamageEvent, Character->GetController(), Character);
 	}
 }
 
