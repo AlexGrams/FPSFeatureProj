@@ -17,6 +17,7 @@ void UEnemyWeaponComponent::BeginPlay()
 	Super::BeginPlay();
 
 	Character = Cast<ACharacter>(this->GetOwner()->GetParentActor());
+	PlayerCharacter = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0);
 }
 
 //void UEnemyWeaponComponent::TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
@@ -27,7 +28,7 @@ void UEnemyWeaponComponent::TickComponent(float DeltaTime, enum ELevelTick TickT
 	// Continuously look at Player
 	// TODO: Clean up, one line
 	FVector Start = GetOwner()->GetActorLocation();
-	FVector End = UGameplayStatics::GetPlayerCharacter(GetWorld(), 0)->GetActorLocation();
+	FVector End = PlayerCharacter->GetActorLocation();
 	FRotator LookRotation = UKismetMathLibrary::FindLookAtRotation(Start, End);
 	this->GetOwner()->SetActorRotation(LookRotation);
 }

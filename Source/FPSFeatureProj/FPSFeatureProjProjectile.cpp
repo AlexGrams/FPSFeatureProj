@@ -27,9 +27,6 @@ AFPSFeatureProjProjectile::AFPSFeatureProjProjectile()
 	ProjectileMovement->MaxSpeed = 3000.f;
 	ProjectileMovement->bRotationFollowsVelocity = true;
 	ProjectileMovement->bShouldBounce = true;
-
-	// Die after 3 seconds by default
-	InitialLifeSpan = 3.0f;
 }
 
 void AFPSFeatureProjProjectile::SetProperties_Implementation(float fDamage, AController* aPlayerController, AActor* aShooter)

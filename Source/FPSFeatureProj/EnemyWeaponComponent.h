@@ -35,6 +35,11 @@ public:
 	void TestPrint();
 	
 protected:
+	// --- Variables 
+
+	// The user-controlled Player character
+	AActor* PlayerCharacter;
+
 	// --- Functions ---
 
 	// Get spawn rotation for a projectile: forward direction of Weapon model
