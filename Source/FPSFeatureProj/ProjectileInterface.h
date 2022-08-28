@@ -26,5 +26,5 @@ public:
 
 	// Set properties for this projectile
 	UFUNCTION(BlueprintNativeEvent, BlueprintCallable, Category = "Setup")
-	void SetProperties(float fDamage, AController* aPlayerController, AActor* aShooter);
+	void SetProperties(float fDamage, AController* aPlayerController, AActor* aShooter, float InitialSpeed);
 };

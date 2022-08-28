@@ -45,6 +45,6 @@ public:
 	/** Returns ProjectileMovement subobject **/
 	UProjectileMovementComponent* GetProjectileMovement() const { return ProjectileMovement; }
 	// Set projectile properties
-	void SetProperties_Implementation(float fDamage, AController* aPlayerController, AActor* aShooter);
+	void SetProperties_Implementation(float fDamage, AController* aPlayerController, AActor* aShooter, float InitialSpeed);
 };
 

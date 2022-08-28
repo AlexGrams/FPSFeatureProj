@@ -29,11 +29,19 @@ AFPSFeatureProjProjectile::AFPSFeatureProjProjectile()
 	ProjectileMovement->bShouldBounce = true;
 }
 
-void AFPSFeatureProjProjectile::SetProperties_Implementation(float fDamage, AController* aPlayerController, AActor* aShooter)
+void AFPSFeatureProjProjectile::SetProperties_Implementation(float fDamage, AController* aPlayerController, AActor* aShooter, float InitialSpeed)
 {
 	Damage = fDamage;
 	PlayerController = aPlayerController;
 	Shooter = aShooter;
+
+	// Set Projectile speed if InitialSpeed is non-negative. Else, use default Projectile speed value.
+	if (InitialSpeed >= 0.0f)
+	{
+		FVector InitialVelocity = FVector(InitialSpeed, 0.0f, 0.0f);
+		ProjectileMovement->MaxSpeed = InitialSpeed;
+		ProjectileMovement->SetVelocityInLocalSpace(InitialVelocity);
+	}
 }
 
 void AFPSFeatureProjProjectile::OnHit(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)

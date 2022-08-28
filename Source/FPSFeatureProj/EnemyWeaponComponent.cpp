@@ -33,15 +33,6 @@ void UEnemyWeaponComponent::TickComponent(float DeltaTime, enum ELevelTick TickT
 	this->GetOwner()->SetActorRotation(LookRotation);
 }
 
-void UEnemyWeaponComponent::TestPrint()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Testing print: UEnemyWeaponComponent")));
-	//if (IsComponentTickEnabled())
-	//	GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("This component can tick")));
-	if (IsRegistered())
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Component is registered")));
-}
-
 FRotator UEnemyWeaponComponent::GetProjectileRotation() const
 {
 	return GetOwner()->GetActorRotation();

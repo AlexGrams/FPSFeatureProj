@@ -17,7 +17,7 @@ class FPSFEATUREPROJ_API UEnemyWeaponLeadingComponent : public UEnemyWeaponCompo
 protected:
 	// --- Functions ---
 
-	// Get spawn rotation for a projectile: forward direction of Weapon model
+	// Calculates a rotation to hit the Player if they continue moving in the same direction as this frame. 
+	// ProjectileInitialSpeed should be non-negative for this to work.
 	virtual FRotator GetProjectileRotation() const override;
-	
 };

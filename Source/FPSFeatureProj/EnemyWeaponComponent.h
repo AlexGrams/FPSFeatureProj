@@ -16,9 +16,7 @@ class FPSFEATUREPROJ_API UEnemyWeaponComponent : public UBaseWeaponComponent
 public:
 	// --- Variables ---
 
-	// TODO: Testing component variables.
-	UPROPERTY(EditDefaultsOnly, BlueprintReadWrite, Category = Testing)
-	int TestValue;
+
 
 	// --- Functions ---
 
@@ -31,8 +29,6 @@ public:
 	// Tick function
 	virtual void TickComponent(float DeltaTime, enum ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
-	// TODO: Testing function
-	void TestPrint();
 	
 protected:
 	// --- Variables 

@@ -62,14 +62,14 @@ void UBaseWeaponComponent::Fire()
 			ActorSpawnParams.Instigator = Character;
 
 			// Spawn the projectile at the muzzle
-			AFPSFeatureProjProjectile* SpawnedProjectile = World->SpawnActor<AFPSFeatureProjProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
+			SpawnedProjectile = World->SpawnActor<AFPSFeatureProjProjectile>(ProjectileClass, SpawnLocation, SpawnRotation, ActorSpawnParams);
 			if (IsValid(SpawnedProjectile) && SpawnedProjectile->Implements<UProjectileInterface>())
 			{
 				IProjectileInterface* Interface = Cast<IProjectileInterface>(SpawnedProjectile);
 				AController* EventInstigator = Character->GetController();
 				AActor* DamageCauser = Character;
 
-				Interface->Execute_SetProperties(SpawnedProjectile, Damage, EventInstigator, DamageCauser);
+				Interface->Execute_SetProperties(SpawnedProjectile, Damage, EventInstigator, DamageCauser, ProjectileInitialSpeed);
 			}
 		}
 	}

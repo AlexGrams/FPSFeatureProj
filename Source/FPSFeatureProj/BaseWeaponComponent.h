@@ -91,6 +91,10 @@ protected:
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
 	bool bCanFire;
 
+	// Speed at which this Weapon's projectile is spawned at, if it is a projectile-type weapon. Use a negative value to spawn with the Projectile's default speed.
+	UPROPERTY(BlueprintReadWrite, EditAnywhere, Category = "Weapon")
+	float ProjectileInitialSpeed;
+
 	// For automatic weapons
 	UPROPERTY(BlueprintReadWrite, Category = "Weapon")
 	FTimerHandle AutoFireHandle;
@@ -99,6 +103,9 @@ protected:
 
 	// True if weapon holder is continuously attempting to fire weapon
 	bool bFireInputHeld;
+
+	// The Projectile that was just spawned. Used for referring to a Projectile the same frame it is created.
+	AFPSFeatureProjProjectile* SpawnedProjectile;
 
 
 	// --- Functions ---
