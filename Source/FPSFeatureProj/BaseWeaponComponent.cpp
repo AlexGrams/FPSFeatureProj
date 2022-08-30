@@ -4,11 +4,13 @@
 #include "BaseWeaponComponent.h"
 #include "FPSFeatureProjProjectile.h"
 #include "Kismet/GameplayStatics.h"
+#include "CritDamageType.h"
 
 // Custom collision channels (For future reference. Some might not be used.)
 #define ECC_Projectile			ECC_GameTraceChannel1
 #define ECC_EnemyProjectile		ECC_GameTraceChannel2
 #define ECC_Enemy				ECC_GameTraceChannel3
+#define WeakPointTag			TEXT("WeakPoint")
 
 // Sets default values for this component's properties
 UBaseWeaponComponent::UBaseWeaponComponent()
@@ -101,16 +103,22 @@ void UBaseWeaponComponent::FireHitscanWeapon()
 
 	if (Result)
 	{
-		DamageTarget(OutHit.GetActor());
+		if (OutHit.Component.IsValid() && OutHit.Component.Get()->ComponentHasTag(WeakPointTag))
+		{
+			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Hit Enemy's weak point")));
+			DamageTarget(OutHit.GetActor(), UCritDamageType::StaticClass());
+		}
+		else
+		{
+			DamageTarget(OutHit.GetActor());
+		}
 	}
 }
 
-void UBaseWeaponComponent::DamageTarget(AActor* Target)
+void UBaseWeaponComponent::DamageTarget(AActor* Target, TSubclassOf<UDamageType> DamageTypeClass)
 {
 	// Actual damage that was applied
 	float TakenDamage = 0.0f;
-
-	TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass();
 
 	if (!IsValid(Target))
 	{

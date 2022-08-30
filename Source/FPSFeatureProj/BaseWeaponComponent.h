@@ -132,6 +132,6 @@ protected:
 	// Uses a line trace to fire at and damage a target. Called when a hitscan weapon is fired, or can be called separately from regular Fire() function.
 	void FireHitscanWeapon();
 
-	// Damage a target that was hit by this Weapon
-	void DamageTarget(AActor* Target);
+	// Damage a target that was hit by this Weapon. Can optionally specify the DamageType.
+	void DamageTarget(AActor* Target, TSubclassOf<UDamageType> DamageTypeClass = UDamageType::StaticClass());
 };

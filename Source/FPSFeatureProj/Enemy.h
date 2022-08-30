@@ -42,6 +42,10 @@ protected:
 	UPROPERTY(BlueprintReadOnly, Category = "Management")
 	AEnemyManager* EnemyManager;
 
+	// How much to multiply damage by if hit on a Weak Point
+	UPROPERTY(BlueprintReadWrite, EditDefaultsOnly, Category = "Damage")
+	float CritHitMultiplier;
+
 	// References to weapon Actors
 	TArray<AActor*> Weapons;
 
@@ -66,5 +70,8 @@ public:
 
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
+
+	// Override for AActor::TakeDamage(). Accounts for critical damage.
+	virtual float TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AController* EventInstigator, AActor* DamageCauser) override;
 
 };
