@@ -49,7 +49,7 @@ public:
 
 	// Decrease count of Enemies by one. Call when an Enemy dies.
 	UFUNCTION(BlueprintCallable, Category = "Enemies")
-	void DecrementNumAliveEnemies();
+	virtual void DecrementNumAliveEnemies();
 
 	// Sets default values for this actor's properties
 	AEnemyManager();
