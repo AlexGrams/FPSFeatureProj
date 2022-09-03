@@ -53,7 +53,7 @@ void AEnemyManager::StartWave()
 				EnemySpawnerIndex = 0;
 			}
 
-			EnemySpawners[EnemySpawnerIndex++]->SpawnEnemy(Wave.Enemy);
+			EnemySpawners[EnemySpawnerIndex++]->SpawnEnemy(Wave.Enemy, this);
 		}
 	}
 }

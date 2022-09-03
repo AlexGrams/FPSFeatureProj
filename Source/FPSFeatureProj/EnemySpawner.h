@@ -22,7 +22,7 @@ public:
 	
 	// Spawns one of the specified Enemy. Will spawn regardless of blocking objects.
 	UFUNCTION(BlueprintCallable, Category = "Spawning")
-	void SpawnEnemy(TSubclassOf<class AEnemy> EnemyToSpawnClass);
+	void SpawnEnemy(TSubclassOf<class AEnemy> EnemyToSpawnClass, AEnemyManager* SpawningEnemyManager = nullptr);
 
 	// Spawn one default Enemy. 
 	UFUNCTION(BlueprintCallable, Category = "Spawning")

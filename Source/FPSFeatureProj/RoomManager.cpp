@@ -4,6 +4,8 @@
 #include "RoomManager.h"
 #include "Components/BoxComponent.h"
 #include "FPSFeatureProjCharacter.h"
+#include "ToggleableInterface.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 ARoomManager::ARoomManager()
 {
@@ -13,17 +15,26 @@ ARoomManager::ARoomManager()
 void ARoomManager::BeginPlay()
 {
 	PlayerHasEntered = false;
+	NumAliveEnemies = 0;
 }
 
-void ARoomManager::ReceiveActorBeginOverlap(AActor* OtherActor)
+void ARoomManager::NotifyActorBeginOverlap(AActor* OtherActor)
 {
+	//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Something entered the zone")));
 	if (!PlayerHasEntered && OtherActor->IsA(AFPSFeatureProjCharacter::StaticClass()))
 	{
-		// TODO: Testing override entering
-		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Player has entered")));
-
 		PlayerHasEntered = true;
 		StartWave();
+
+		// Close doors
+		for (AActor* DoorActor : Doors)
+		{
+			if (UKismetSystemLibrary::DoesImplementInterface(DoorActor, UToggleableInterface::StaticClass()))
+			{
+				Cast<IToggleableInterface>(DoorActor)->Execute_Toggle(DoorActor, true);
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Closed a door")));
+			}
+		}
 	}
 }
 
@@ -31,8 +42,16 @@ void ARoomManager::DecrementNumAliveEnemies()
 {
 	Super::DecrementNumAliveEnemies();
 
-	if (NumAliveEnemies <= 0)
+	if (Super::NumAliveEnemies <= 0)
 	{
-		// TODO: Open Doors.
+		// Open Doors.
+		for (AActor* DoorActor : Doors)
+		{
+			if (UKismetSystemLibrary::DoesImplementInterface(DoorActor, UToggleableInterface::StaticClass()))
+			{
+				Cast<IToggleableInterface>(DoorActor)->Execute_Toggle(DoorActor, false);
+				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Opened a door")));
+			}
+		}
 	}
 }

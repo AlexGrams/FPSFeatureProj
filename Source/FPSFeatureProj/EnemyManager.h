@@ -64,6 +64,7 @@ protected:
 	// --- Variables ---
 
 	// All EnemySpawners in this level
+	UPROPERTY(EditAnywhere, Category = "Waves")
 	TArray<AEnemySpawner*> EnemySpawners;
 
 	int NumAliveEnemies;

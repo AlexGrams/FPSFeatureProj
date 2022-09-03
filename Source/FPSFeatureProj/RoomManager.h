@@ -20,13 +20,15 @@ class FPSFEATUREPROJ_API ARoomManager : public AEnemyManager
 public:
 	// --- Variables ---
 
-	// TODO: Doors variable
+	// Doors that will be closed/opened by this Room. Must have ToggleableInterface.
+	UPROPERTY(BlueprintReadWrite, EditInstanceOnly, Category = "Room")
+	TArray<AActor*> Doors;
 
 	// --- Functions ---
 
 	ARoomManager();
 
-	void ReceiveActorBeginOverlap(AActor* OtherActor);
+	virtual void NotifyActorBeginOverlap(AActor* OtherActor) override;
 
 	// Special decrement for Rooms: if no Enemies left, open Doors.
 	virtual void DecrementNumAliveEnemies() override;
