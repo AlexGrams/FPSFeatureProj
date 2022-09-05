@@ -105,7 +105,6 @@ void UBaseWeaponComponent::FireHitscanWeapon()
 	{
 		if (OutHit.Component.IsValid() && OutHit.Component.Get()->ComponentHasTag(WeakPointTag))
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Red, FString::Printf(TEXT("Hit Enemy's weak point")));
 			DamageTarget(OutHit.GetActor(), UCritDamageType::StaticClass());
 		}
 		else

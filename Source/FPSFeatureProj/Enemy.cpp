@@ -42,7 +42,6 @@ float AEnemy::TakeDamage(float DamageAmount, FDamageEvent const& DamageEvent, AC
 	// Account for critical hit damage
 	if (DamageEvent.DamageTypeClass == UCritDamageType::StaticClass())
 	{
-		// TODO: Make crit multiplier variable.
 		DamageAmount *= CritHitMultiplier;
 	}
 

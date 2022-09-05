@@ -32,7 +32,7 @@ void ARoomManager::NotifyActorBeginOverlap(AActor* OtherActor)
 			if (UKismetSystemLibrary::DoesImplementInterface(DoorActor, UToggleableInterface::StaticClass()))
 			{
 				Cast<IToggleableInterface>(DoorActor)->Execute_Toggle(DoorActor, true);
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Closed a door")));
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Closed a door")));
 			}
 		}
 	}
@@ -42,7 +42,7 @@ void ARoomManager::DecrementNumAliveEnemies()
 {
 	Super::DecrementNumAliveEnemies();
 
-	if (Super::NumAliveEnemies <= 0)
+	if (NumAliveEnemies <= 0)
 	{
 		// Open Doors.
 		for (AActor* DoorActor : Doors)
@@ -50,7 +50,7 @@ void ARoomManager::DecrementNumAliveEnemies()
 			if (UKismetSystemLibrary::DoesImplementInterface(DoorActor, UToggleableInterface::StaticClass()))
 			{
 				Cast<IToggleableInterface>(DoorActor)->Execute_Toggle(DoorActor, false);
-				GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Opened a door")));
+				//GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Yellow, FString::Printf(TEXT("Opened a door")));
 			}
 		}
 	}

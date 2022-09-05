@@ -29,6 +29,7 @@ void AEnemySpawner::SpawnEnemy(TSubclassOf<class AEnemy> EnemyToSpawnClass, AEne
 
 	if (!IsValid(SpawningEnemyManager))
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 15.0f, FColor::Blue, FString::Printf(TEXT("Invalid manager: Setting manager to default")));
 		SpawningEnemyManager = EnemyManager;
 	}
 
@@ -37,7 +38,7 @@ void AEnemySpawner::SpawnEnemy(TSubclassOf<class AEnemy> EnemyToSpawnClass, AEne
 
 	AActor* SpawnedEnemy = GetWorld()->SpawnActor<AActor>(EnemyToSpawnClass, GetActorLocation(), GetActorRotation(), ActorSpawnParams);
 	Cast<AEnemy>(SpawnedEnemy)->SetEnemyManager(SpawningEnemyManager);
-	EnemyManager->IncrementNumAliveEnemies();
+	SpawningEnemyManager->IncrementNumAliveEnemies();
 }
 
 void AEnemySpawner::SpawnDefaultEnemy()
