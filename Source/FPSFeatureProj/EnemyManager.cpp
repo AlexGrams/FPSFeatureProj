@@ -17,7 +17,7 @@ void AEnemyManager::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	// Get all EnemySpawners once so that they can be acced without recalculation later.
+	// Get all EnemySpawners once so that they can be accessed without recalculation later.
 	TArray<AActor*> TempEnemySpawners;
 
 	UGameplayStatics::GetAllActorsOfClass(GetWorld(), AEnemySpawner::StaticClass(), TempEnemySpawners);
