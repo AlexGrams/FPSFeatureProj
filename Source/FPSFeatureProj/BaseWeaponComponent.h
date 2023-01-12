@@ -49,6 +49,10 @@ public:
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Weapon)
 	float Damage;
 
+	// Can this weapon fire forever without reloading?
+	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Weapon)
+	bool InfiniteAmmo;
+
 	// Max ammo count
 	UPROPERTY(EditInstanceOnly, BlueprintReadWrite, Category = Weapon)
 	int MaxAmmo;

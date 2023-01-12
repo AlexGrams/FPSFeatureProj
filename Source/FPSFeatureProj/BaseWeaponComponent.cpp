@@ -30,12 +30,15 @@ void UBaseWeaponComponent::BeginPlay()
 void UBaseWeaponComponent::Fire()
 {
 	// TODO: Better pointer validation checks
-	if (!IsValid(Character) || Character == nullptr || Character->GetController() == nullptr || CurrentAmmo <= 0)
+	if (!IsValid(Character) || Character == nullptr || Character->GetController() == nullptr || (!InfiniteAmmo && CurrentAmmo <= 0))
 	{
 		return;
 	}
 
-	CurrentAmmo -= 1;
+	if (!InfiniteAmmo)
+	{
+		CurrentAmmo -= 1;
+	}
 
 	if (IsHitscan)
 	{
